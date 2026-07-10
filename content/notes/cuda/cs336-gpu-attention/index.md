@@ -8,6 +8,8 @@ showReadingTime = true
 showTableOfContents = true
 +++
 
+{{< katex >}}
+
 > 基于 Stanford CS336 Spring 2026 Lecture 5（GPUs, TPUs, and Efficient Attention）整理。官方材料：[lecture_05.pdf](https://github.com/stanford-cs336/lectures/blob/main/lecture_05.pdf)。
 
 本讲从模型结构转入系统视角，目标是理解：为什么现代 LLM 训练和推理必须依赖 GPU/TPU，以及为什么同样的数学计算在不同 kernel、不同内存访问模式下性能可能相差巨大。

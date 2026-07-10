@@ -8,6 +8,8 @@ showReadingTime = true
 showTableOfContents = true
 +++
 
+{{< katex >}}
+
 > 原论文：*Accelerating Large-Scale Reasoning Model Inference with Sparse Self-Speculative Decoding*，Yilong Zhao 等，UC Berkeley / MIT / UW / NVIDIA 等，2025-12，[arXiv:2512.01278](https://arxiv.org/abs/2512.01278)。代码：[github.com/sspec-project/SparseSpec](https://github.com/sspec-project/SparseSpec)。
 
 ## 一句话摘要

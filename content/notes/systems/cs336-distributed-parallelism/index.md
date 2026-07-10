@@ -8,6 +8,8 @@ showReadingTime = true
 showTableOfContents = true
 +++
 
+{{< katex >}}
+
 > 基于 Stanford CS336 Lecture 7（Parallelism），Tatsunori Hashimoto & Percy Liang，Stanford Spring 2025。视频：[YouTube](https://www.youtube.com/watch?v=l1RJcDjzK8M)，Slides：[lecture_07.py](https://github.com/stanford-cs336/lectures/blob/main/lecture_07.py)。
 
 上周讲单 GPU 内部的并行（kernel fusion、tiling、shared memory）。本周扩展到**多 GPU / 多机并行**。核心主题：**编排计算以避免数据传输瓶颈**。无论单 GPU 内部还是多 GPU 之间，根本问题都是——算力离数据太远。

@@ -8,6 +8,8 @@ showReadingTime = true
 showTableOfContents = true
 +++
 
+{{< katex >}}
+
 > 基于 Stanford CS336 Spring 2026 Lecture 6（Kernels, Triton, XLA）整理。官方材料：[lecture_06.py](https://github.com/stanford-cs336/lectures/blob/main/lecture_06.py)。
 
 Lecture 5 从硬件角度建立 GPU 直觉，Lecture 6 从实践角度进入 kernel 编程和 profiling。三条线：
