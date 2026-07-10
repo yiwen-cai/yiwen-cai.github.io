@@ -18,8 +18,8 @@ enableStructuredBreadcrumbs = false
 replyByEmail = false
 
 # mainSections：决定首页「最近文章」和列表聚合哪些内容目录
-# 同时展示 projects 和 notes
-mainSections = ["projects", "notes"]
+# 首页只聚合笔记；项目入口走导航「项目」页，更克制
+mainSections = ["notes"]
 # robots = ""
 
 disableImageOptimization = false

@@ -2,23 +2,38 @@
 title = '关于'
 date = 2026-07-10
 draft = false
+showDate = false
+showReadingTime = false
+showWordCount = false
+showAuthor = false
+showPagination = false
+showRelatedContent = false
+showTaxonomies = false
 +++
 
-<!-- TODO: 按需调整下面的自我介绍语气，并补充教育/工作经历 -->
+我是 Yiwen Cai，北京邮电大学计算机技术专业硕士在读（推免入学）。我的研究兴趣集中在**算法与硬件之间的那一层**——GPU 算子优化与 LLM 推理系统。
 
-我是一名关注 **AI Infra 与系统优化**的工程师/研究者，主要方向包括 CUDA、Triton、LLM 推理优化与系统实验。
+## 教育经历
 
-## 方向
+- **北京邮电大学 · 硕士**（2026.09 – 2029.06）计算机技术，推免
+- **北京邮电大学 · 本科**（2022.09 – 2026.06）计算机科学与技术
+  - GPA 3.76 / 4.0，排名 59 / 389（前 15.16%）
 
-- GPU kernel 优化（CUDA / Triton）
-- LLM 推理与部署
-- 分布式训练与系统实验
+## 研究方向
+
+- LLM 训练与推理优化
+- GPU 算子优化（CUDA / Triton）
+- 分布式计算与云计算、高性能计算
 
 ## 技能
 
-- **编程语言**：Python、C++、CUDA
-- **框架**：PyTorch、Triton、vLLM
-- **系统**：Linux、Git、Docker
+- **编程语言**：Python、C/C++、CUDA、Triton、Rust、Go
+- **框架与工具**：PyTorch、Nsight Compute/Systems、Docker、Kubernetes
+
+## 代表性工作
+
+- **华为 ICT 大赛全国总决赛一等奖**（最高算子迁移优化奖）——作为队伍唯一开发者获算子迁移优化赛题所有队伍最佳。
+- 详见 [项目](../projects/) 页。
 
 ## 联系
 
