@@ -21,5 +21,10 @@
   pageRef = "about"
   weight = 40
 
+[[main]]
+  name = "标签"
+  pageRef = "tags"
+  weight = 50
+
 
 # -- Footer Menu（底部导航，可留空）--
