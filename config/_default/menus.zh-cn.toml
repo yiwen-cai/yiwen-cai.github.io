@@ -1,0 +1,25 @@
+# -- Main Menu（顶部导航）--
+# name = 显示名称；pageRef = 指向的内容区；weight = 排序（升序）
+
+[[main]]
+  name = "首页"
+  pageRef = "/"
+  weight = 10
+
+[[main]]
+  name = "项目"
+  pageRef = "projects"
+  weight = 20
+
+[[main]]
+  name = "笔记"
+  pageRef = "notes"
+  weight = 30
+
+[[main]]
+  name = "关于"
+  pageRef = "about"
+  weight = 40
+
+
+# -- Footer Menu（底部导航，可留空）--
