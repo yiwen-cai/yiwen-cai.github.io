@@ -1,0 +1,46 @@
+<script src="https://giscus.app/client.js"
+        data-repo="yiwen-cai/yiwen-cai.github.io"
+        data-repo-id="R_kgDOTUN7Eg"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOTUN7Es4DA6Jv"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="light"
+        data-lang="zh-CN"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+
+<script>
+  // 评论区跟随 Blowfish 亮/暗切换同步。
+  // Blowfish 切换机制：<html> 增删 class "dark"；入口是 #appearance-switcher / #appearance-switcher-mobile。
+  // data-theme 初始给 light，真实主题由下面 JS 接管（与站点默认 defaultAppearance = "light" 一致）。
+  (function () {
+    function giscusTheme() {
+      return document.documentElement.classList.contains("dark") ? "dark_dimmed" : "light";
+    }
+    function setGiscusTheme() {
+      var iframe = document.querySelector("iframe.giscus-frame");
+      if (!iframe) return;
+      iframe.contentWindow.postMessage(
+        { giscus: { setConfig: { theme: giscusTheme() } } },
+        "https://giscus.app"
+      );
+    }
+    // Giscus iframe 首次加载完成后，按站点当前主题校准一次
+    window.addEventListener("message", function (e) {
+      if (e.origin === "https://giscus.app") setGiscusTheme();
+    });
+    // 联动桌面端 + 移动端切换按钮（延时 50ms 等 appearance.js 切完 dark class）
+    ["appearance-switcher", "appearance-switcher-mobile"].forEach(function (id) {
+      var btn = document.getElementById(id);
+      if (btn) btn.addEventListener("click", function () {
+        setTimeout(setGiscusTheme, 50);
+      });
+    });
+  })();
+</script>
