@@ -101,7 +101,92 @@ graph TD
 
 ## 二、系统管理：KV Cache 怎么放、怎么调度、怎么恢复
 
-（待写）
+本章的发力点是 **$T$ 的管理与调度，但不减少 $T$ 本身**。明确边界：系统管理提高的是利用率，不改变每个 token 的 KV 表示。
+
+### PagedAttention：像虚拟内存一样管理 KV Cache
+
+[PagedAttention](https://arxiv.org/abs/2309.06180)（vLLM, SOSP 2023）借鉴操作系统的分页思想：请求在逻辑上看到连续的 token 序列，但 KV blocks 在物理 GPU memory 中可以不连续，由一张 **block table** 做映射。
+
+{{< mermaid >}}
+graph LR
+    subgraph Logical["逻辑 KV blocks（请求视角：连续）"]
+        L0["block 0"] --> L1["block 1"] --> L2["block 2"] --> L3["block 3"]
+    end
+    subgraph BT["Block table（页表）"]
+        direction LR
+        T0["0 → 物理 7"]
+        T1["1 → 物理 2"]
+        T2["2 → 物理 9"]
+        T3["3 → 物理 4"]
+    end
+    subgraph Physical["GPU 物理块（分散）"]
+        P0["0"] --- P7["7"] --- P2["2"] --- P9["9"] --- P4["4"]
+    end
+    L0 -.-> T0 -.-> P7
+    L1 -.-> T1 -.-> P2
+    L2 -.-> T2 -.-> P9
+    L3 -.-> T3 -.-> P4
+{{< /mermaid >}}
+
+它解决的是：连续显存分配的碎片、输出长度未知导致的预分配浪费、decode 动态增长，从而支撑更大的有效 batch size 和 continuous batching。
+
+**PagedAttention is memory management, not KV compression.** 它不改变 K/V 表示本身。
+
+### KV-aware scheduling：把 cache 容量变成一等调度约束
+
+PagedAttention 解决了 KV blocks 在 GPU 里怎么组织，但真实服务中多个请求同时到达、长度不同、输出预算不同。传统按到达时间 batching 只关注 batch size 和 compute，忽略未来 KV Cache 占用，可能导致 OOM 或高延迟。
+
+[Online Scheduling for LLM Inference with KV Cache Constraints](https://arxiv.org/abs/2502.07115)（2025）一类的工作把 KV Cache capacity 纳入调度模型：估算 prompt 长度 + 输出预算 + KV footprint，在 KV cache 约束下做在线 batching，换取更低延迟和更好资源利用。
+
+**KV Cache 不只是内存对象，而是 online serving scheduler 必须显式建模的一等约束。**
+
+### Agent 与多轮对话：cache 生命周期变长了
+
+Agent workload 和普通单轮问答不同。Agent 会多次规划、调用工具、等待返回，然后继续推理。这个过程中 KV Cache 可能长时间 idle，但又不能随便丢掉——否则恢复时 TTFT（首 token 延迟）会飙升。
+
+{{< mermaid >}}
+graph LR
+    ACTIVE["active<br/>正在推理"] -->|tool call| IDLE["idle<br/>等待返回"]
+    IDLE -->|resume| ACTIVE
+    IDLE -->|空间竞争| EVICT["evicted"]
+    EVICT -->|重算/加载| RESTORE["restored"]
+    ACTIVE -.->|prefix 共享| SHARED["shared / reused"]
+{{< /mermaid >}}
+
+新挑战包括：cache 在工具调用期间 idle、critical agent cache 被挤出会显著增加 TTFT、多 agent 并发导致空间竞争、shared prefix / session cache 需要复用策略。代表方向如 TokenCake（KV-Cache-Centric Serving for Multi-Agent）、Continuum（带 KV Cache TTL 的 multi-turn agent 调度）。
+
+**Agent 场景使 KV Cache 管理从「单次请求资源分配」变成「跨时间的状态生命周期管理」。**
+
+### KV Cache restoration：重算还是加载？
+
+多轮对话、RAG、Agent 场景经常需要恢复已有 KV Cache。恢复有两种方式，各有代价：
+
+- **重算（Recompute）**：从原始 prompt 重新计算，消耗 GPU compute，长上下文下代价高。
+- **加载（Load）**：从 CPU/SSD/remote 加载，消耗 I/O 带宽，可能增加 TTFT。
+
+CacheFlow 把这个问题变成 token / layer / multi-GPU 三维并行恢复：token 级（早期 chunk 重算、后期 chunk 加载）、layer 级（低层重算、高层加载）、multi-GPU 级（并发恢复 shard）。Kareto 则从 multi-objective tiered storage 配置角度，在 latency ↔ throughput ↔ cost 之间权衡，跨 GPU HBM / DRAM / SSD / remote 做分层。
+
+**2026 年的系统问题不只是「cache 放在哪里」，还包括「cache 如何在计算和 I/O 之间高效恢复」。**
+
+### 三个常被混淆的层次：FlashAttention / PagedAttention / KV Compression
+
+这是一个常被混淆的关键区分，三者位于不同层次，不是替代关系：
+
+| 层次 | 代表方法 | 解决的问题 |
+|---|---|---|
+| Attention kernel | [FlashAttention](https://arxiv.org/abs/2205.14135) | 减少 attention 计算中的 HBM/SRAM IO，避免 materialize attention matrix |
+| KV block management | [PagedAttention](https://arxiv.org/abs/2309.06180) | 减少碎片，支持动态 batching |
+| Cache policy | eviction / quantization / retrieval | 减少保存或访问的 KV |
+
+FlashAttention 优化 attention 计算路径（尤其 prefill/训练的 IO）；PagedAttention 管理 decode serving 中的 KV blocks；KV compression 才真正减少或近似历史 K/V。
+
+### 小结：系统管理的边界
+
+系统管理能做的：显存碎片与预分配浪费 ✓、动态增长与 continuous batching ✓、KV-aware scheduling ✓、multi-turn/agent cache 生命周期 ✓、restoration/offloading/multi-tier storage ✓。
+
+系统管理做不到的：单个 token 的 KV 表示大小 ✗、KV Cache 随上下文线性增长 ✗、long output 中 decode cache 持续增长 ✗。
+
+**System management improves utilization; compression reduces what must be stored or accessed.** 这就自然引出下一部分——哪些 KV 值得保留。
 
 ## 三、缓存压缩：哪些 KV 值得保留？
 
