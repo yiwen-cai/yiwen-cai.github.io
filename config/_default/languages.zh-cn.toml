@@ -16,13 +16,13 @@ title = "个人网站"
 # 作者信息：控制 Profile 首页的头像、标语、简介和社交链接
 # TODO: 把下面的占位内容替换为你的真实信息
 [params.author]
-  name = "你的名字"
-  email = "you@example.com"
+  name = "Yiwen Cai"
+  email = "caiyiwen.cs@foxmail.com"
   # image = "img/author.jpg"   # 相对 assets/ 目录，放头像后取消注释
   imageQuality = 96
   headline = "AI Infra / 系统优化方向"     # Profile 首页标语
   bio = "关注 CUDA、Triton、LLM 推理优化与系统实验。"   # Profile 首页简介
   links = [
     { github = "https://github.com/drink-less-milktea" },
-    { email = "mailto:you@example.com" }
+    { email = "mailto:caiyiwen.cs@foxmail.com" }
   ]

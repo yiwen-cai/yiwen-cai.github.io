@@ -4,7 +4,7 @@ date = 2026-07-10
 draft = false
 +++
 
-<!-- TODO: 替换为你的真实个人信息 -->
+<!-- TODO: 按需调整下面的自我介绍语气，并补充教育/工作经历 -->
 
 我是一名关注 **AI Infra 与系统优化**的工程师/研究者，主要方向包括 CUDA、Triton、LLM 推理优化与系统实验。
 
@@ -23,4 +23,4 @@ draft = false
 ## 联系
 
 - GitHub：[@drink-less-milktea](https://github.com/drink-less-milktea)
-- 邮箱：you@example.com
+- 邮箱：caiyiwen.cs@foxmail.com
