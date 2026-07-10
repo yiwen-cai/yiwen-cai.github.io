@@ -1,5 +1,5 @@
 # Hugo 构建 + 部署到 GitHub Pages（官方 deploy-pages artifact 方案）
-# 仓库：drink-less-milktea.github.io（用户主页仓库，根路径部署，无需 base）
+# 仓库：yiwen-cai.github.io（用户主页仓库，根路径部署，无需 base）
 # 参考：https://gohugo.io/hosting-and-deployment/hosting-on-github/
 #
 # 首次使用前需在仓库 Settings → Pages → Source 选择 "GitHub Actions"
@@ -50,7 +50,7 @@ jobs:
           submodules: recursive
           fetch-depth: 0
 
-      # 读取 Pages 的 base_url（用户主页仓库下为 https://drink-less-milktea.github.io）
+      # 读取 Pages 的 base_url（用户主页仓库下为 https://yiwen-cai.github.io）
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5

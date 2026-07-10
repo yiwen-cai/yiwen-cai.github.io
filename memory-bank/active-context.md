@@ -15,7 +15,7 @@
 - Configure deployment to GitHub Pages/Vercel
 ## Current Session Notes
 
-- [4:45:13 PM] [Unknown User] Initialized Memory Bank and wrote user profile: Read background from ~/.hermes/memories/USER.md and ~/.codex/memories, initialized project Memory Bank at drink-less-milktea.github.io/memory-bank, and persisted user profile.
+- [4:45:13 PM] [Unknown User] Initialized Memory Bank and wrote user profile: Read background from ~/.hermes/memories/USER.md and ~/.codex/memories, initialized project Memory Bank at yiwen-cai.github.io/memory-bank, and persisted user profile.
 - [4:45:10 PM] [Unknown User] File Update: Updated user-profile.md
 - [Note 1]
 - [Note 2]

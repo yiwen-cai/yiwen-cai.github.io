@@ -23,6 +23,6 @@ title = "个人网站"
   headline = "AI Infra / 系统优化方向"     # Profile 首页标语
   bio = "关注 CUDA、Triton、LLM 推理优化与系统实验。"   # Profile 首页简介
   links = [
-    { github = "https://github.com/drink-less-milktea" },
+    { github = "https://github.com/yiwen-cai" },
     { email = "mailto:caiyiwen.cs@foxmail.com" }
   ]

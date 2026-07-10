@@ -3,7 +3,7 @@
 ## Identity
 - Name: 蔡逸文 (Cai Yiwen)
 - Email: caiyiwen.cs@foxmail.com
-- GitHub: github.com/drink-less-milktea
+- GitHub: github.com/yiwen-cai
 - Education: 北邮计算机本科，已保研本校（推免），硕士 2026 年 9 月入学
 
 ## Career Focus
@@ -34,5 +34,5 @@
 - CS336: remote a800 /storage/caiyiwen/code/cs336/assignment
 
 ## Project Context
-- Current repo: drink-less-milktea.github.io (personal homepage)
+- Current repo: yiwen-cai.github.io (personal homepage)
 - Goal: build a personal homepage to showcase projects and technical writing

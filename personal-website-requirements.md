@@ -50,7 +50,7 @@
   - 不低的使用规模；
   - 清晰的更新、部署和排障资料；
   - 适合长期维护与持续添加内容。
-- 希望静态部署到 GitHub Pages，仓库名称为 `drink-less-milktea.github.io`。
+- 希望静态部署到 GitHub Pages，仓库名称为 `yiwen-cai.github.io`。
 - 需要控制上游升级和内容迁移成本，避免未来被模板私有格式深度绑定。
 
 ## 目标信息架构
