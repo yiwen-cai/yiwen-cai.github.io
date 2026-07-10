@@ -190,7 +190,95 @@ FlashAttention 优化 attention 计算路径（尤其 prefill/训练的 IO）；
 
 ## 三、缓存压缩：哪些 KV 值得保留？
 
-（待写）
+本章的发力点是 **减少有效 $T$ 或 $\text{bytes}$**。系统管理回答「KV Cache 怎么放」，压缩回答「哪些 KV 保留、如何表示、何时压缩」。重点是 2025–2026 对「重要性」定义的修正，而不是旧的 SnapKV/PyramidKV。
+
+### 压缩方法的四条路线
+
+{{< mermaid >}}
+graph TD
+    ROOT["KV Cache Compression<br/>哪些 KV 值得保留？"]
+    ROOT --> A["Token selection<br/>eviction / pruning"]
+    ROOT --> B["Representation compression<br/>quantization"]
+    ROOT --> C["Semantic compression<br/>chunk-level selection"]
+    ROOT --> D["Decode-time compression<br/>long-output / reasoning-aware"]
+    A -.-> A1["SnapKV / DapQ / LaProx / KVP"]
+    B -.-> B1["KIVI / KVQuant / TurboQuant"]
+    C -.-> C1["ChunkKV"]
+    D -.-> D1["LongFlow / Moment-KV"]
+{{< /mermaid >}}
+
+### 旧基线：attention-based heuristic
+
+早期方法奠定基础，但大多依赖 attention pattern，且主要面向 long input：
+
+| 方法 | 核心原理 | 优势 | 局限 |
+|---|---|---|---|
+| [StreamingLLM](https://arxiv.org/abs/2309.17453) | sink tokens + recent window | 稳定流式生成 | 语义选择弱 |
+| [SnapKV](https://arxiv.org/abs/2404.14469) | observation window attention | training-free，简单 | input-side 与 decode-side 可能错位 |
+| PyramidKV | layer-wise budget | 考虑层间差异 | 仍依赖 attention pattern |
+
+关键铺垫：**Attention score is useful, but not always sufficient.** attention sink 说明「高 attention」不一定等于语义重要——开头 token 可能只是承担概率质量或位置稳定作用。这正是后面 DapQ 和 LaProx 对「重要性」定义做修正的出发点。
+
+### position-aware：DapQ（位置比内容更重要）
+
+SnapKV 的问题：用 prompt 末尾的 observation window 近似未来 decode attention，但 input-side query 可能与 decode-time query 错位。
+
+DapQ 的关键是**位置对齐**：它认为构造 future query 时，位置比内容更重要。流程是追加 pseudo tokens → 赋予未来 decoding 位置 → pseudo queries attend to prompt KV → Top-K 选择 prompt KV。
+
+{{< mermaid >}}
+graph LR
+    A["Append pseudo tokens"] --> B["赋予未来 decode 位置"]
+    B --> C["pseudo queries attend to prompt KV"]
+    C --> D["Top-K 选择 prompt KV"]
+{{< /mermaid >}}
+
+DapQ training-free，比 observation window 更 decode-aligned；局限是主要压缩 prompt KV，pseudo position 是超参数。
+
+### output-aware：LaProx（attention score ≠ 真实输出贡献）
+
+LaProx 指出 token 是否重要不只取决于 attention weight，还取决于 value 和 output projection。它把 eviction 重构为 output-aware 的矩阵乘法近似：
+
+$$\text{Attention output} = A \cdot V \cdot W_O, \qquad \text{importance}_i \propto \|A_{:,i}\| \times \|(V W_O)_i\|$$
+
+即 token 对输出的真实贡献由 attention map $A$、value $V$、output projection $W_O$ 三者共同决定。这比纯 attention 启发式更接近真实输出贡献，代价是计算和实现复杂度更高，端到端收益依赖 kernel。
+
+### learning-based：KVP（从手工规则到学习式 policy）
+
+2026 年出现了 learned eviction：把 $(k_i, v_i, \text{position}_i)$ 喂给一个轻量 policy / RL agent，输出 token ranking，保留 top-budget KV。KVP 学习的是 token 对未来 decoding 的 utility，不再依赖固定启发式，可适配不同 head/budget；代价是需要离线训练，泛化和部署成本更高。
+
+### 量化：从 scalar 到 vector quantization
+
+量化的背景是 KIVI / KVQuant 这类 activation-specific 低比特量化，处理 key/value 不对称、outlier、RoPE 效应。新进展 TurboQuant（QJL + PolarQuant）走向 online vector quantization：
+
+| 维度 | scalar quant（KIVI / KVQuant） | vector quant（TurboQuant） |
+|---|---|---|
+| 压缩单位 | 单个标量 | 向量 |
+| 关注点 | 低比特表示 | near-optimal distortion、保持内积结构 |
+| token | 可能丢 token | 不丢 token |
+
+核心动机：attention score 取决于 $q^\top k$，所以量化要尽量保持向量内积结构，而不是单纯追求每个元素的低比特。TurboQuant 很新，实际收益依赖 kernel 和 benchmark 范围。
+
+### semantic-aware：ChunkKV（以语义 chunk 为压缩单位）
+
+token-level pruning 的反例：可能保住了关键词，却丢了条件/否定这种依赖语义连续性的内容。ChunkKV 以语义 chunk 而非孤立 token 为压缩单位：semantic chunking → chunk importance estimation → preserve coherent chunks，保留语义连续性和证据链。局限是 chunk 边界和粒度影响压缩率与质量。
+
+### reasoning-aware：LongFlow（decode-time 压缩）
+
+要区分 long input 和 long output：前者是 prefill 后形成大 prompt KV，后者是 decode 中 CoT 持续增长。[LongFlow](https://arxiv.org/abs/2605.29873)（2026）面向 reasoning 的 long output，复用 attention 中间结果 $\alpha_t$，用 $\text{score}_i = \|\alpha_t^i v_i\|$ 估计 token 重要性，把 attention + estimation + eviction 融合进一个 kernel。卖点是 zero-history + zero-cost estimation——复用已有 attention 中间量，几乎不额外算；局限是依赖 query 相似性，需要定制 kernel。
+
+### 动态压缩趋势与核心 trade-off
+
+动态压缩还有 RocketKV（coarse permanent eviction + dynamic sparse attention）、Moment-KV（momentum-based decode-time importance tracking）等方向。但压缩不是单纯追压缩率，共性 trade-off 有五条：
+
+| 共性 trade-off | 含义 |
+|---|---|
+| Memory saving ≠ latency improvement | 省显存不等于端到端变快 |
+| Attention score ≠ 真实重要性 | 见 LaProx |
+| Long input ≠ Long output | 是不同问题，见 LongFlow |
+| 高压缩率可能损害 retrieval/reasoning/code | 任务敏感 |
+| 真实收益依赖 kernel/scheduler/workload | 离开系统谈压缩率无意义 |
+
+**压缩的灵魂是 memory-latency-quality-system 的平衡，而不是更高的压缩率。**
 
 ## 四、架构协同：从设计源头减少 KV Cache
 
