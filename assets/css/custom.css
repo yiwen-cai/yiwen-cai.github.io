@@ -42,10 +42,41 @@ article li {
   line-height: 1.85;
 }
 
-/* 正文最大宽度 720–780px，避免行长过长 */
-article .max-w-prose,
-.prose {
-  max-width: 46rem; /* 736px，落在 720–780 区间 */
+/* --------------------------------------------------------------------------
+   2. 笔记详情页正文宽度加宽（~900px）
+   --------------------------------------------------------------------------
+   背景：Blowfish single.html 的正文被两层 max-width: 65ch 卡住——
+     (1) <section class="prose ... lg:flex-row">         （main.css .prose）
+     (2) <div class="article-content max-w-prose">       （main.css .max-w-prose）
+   必须同时放开两层，正文才能真正变宽。
+   selector 用 .article-content 锚定（grep 确认只在 single.html 第49行出现，
+   首页/列表页都没有），配合 :has() 命中外层 .prose section。
+   注：custom.css 不在 @layer 内，Tailwind v4 下未分层样式优先级高于
+       @layer utilities/components，无需 !important 即可覆盖 65ch。
+   -------------------------------------------------------------------------- */
+
+/* (1) 外层 <section class="prose"> 的 65ch → 放开。
+   :has(.article-content) 精确命中笔记/文章详情页，不影响首页 <section class="prose w-full">。 */
+section.prose:has(.article-content) {
+  max-width: none;
+}
+
+/* (2) 正文内层 .article-content 自身的 max-w-prose(65ch) → 900px 软上限 */
+.article-content {
+  max-width: 56.25rem; /* 900px */
+}
+
+/* (3) 正文列父容器 div.max-w-fit 解除 fit-content 上限，让 900px 生效 */
+div:has(> .article-content) {
+  max-width: 56.25rem;
+}
+
+/* (4) TOC 右栏从 18rem(288px) 收窄到 15rem(240px)，给正文让位。
+   仅 lg(1024px+) 桌面端生效；移动端 TOC 在正文上方不受影响。 */
+@media (width >= 1024px) {
+  .lg\:max-w-2xs {
+    max-width: 15rem;
+  }
 }
 
 /* 段落间距明确留白 */
