@@ -60,8 +60,11 @@ jobs:
         run: "[[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true"
 
       # 简历源码在 resume/*.typ，编译为 PDF 并放入 static/resume/，随 Hugo 构建一并发布
+      # 版本与本机对齐（0.13.1），更高版本的 scienceicons 依赖会因 typst API 变更编译失败
       - name: Install Typst
         uses: typst-community/setup-typst@v4
+        with:
+          typst-version: "0.13.1"
 
       - name: Compile resume PDFs
         run: |
