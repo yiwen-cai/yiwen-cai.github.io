@@ -2,6 +2,9 @@
 /public/
 /resources/_gen/
 
+# 简历 PDF 由 CI 从 resume/*.typ 编译生成，不入库
+/static/resume/
+
 # Hugo 自动生成的临时文件
 .hugo_build.lock
 

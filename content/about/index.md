@@ -31,6 +31,11 @@ showTaxonomies = false
 - **华为 ICT 大赛全国总决赛一等奖**（最高算子迁移优化奖）——作为队伍唯一开发者获算子迁移优化赛题所有队伍最佳。
 - 详见 [项目](../projects/) 页。
 
+## 简历
+
+- [中文简历（PDF）](/resume/chinese.pdf)
+- [English Resume (PDF)](/resume/main.pdf)
+
 ## 联系
 
 - GitHub：[@yiwen-cai](https://github.com/yiwen-cai)

@@ -59,6 +59,16 @@ jobs:
       - name: Install Node.js dependencies
         run: "[[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true"
 
+      # 简历源码在 resume/*.typ，编译为 PDF 并放入 static/resume/，随 Hugo 构建一并发布
+      - name: Install Typst
+        uses: typst-community/setup-typst@v4
+
+      - name: Compile resume PDFs
+        run: |
+          mkdir -p static/resume
+          typst compile resume/main.typ static/resume/main.pdf
+          typst compile resume/chinese.typ static/resume/chinese.pdf
+
       - name: Build with Hugo
         env:
           HUGO_CACHEDIR: ${{ runner.temp }}/hugo_cache
