@@ -20,7 +20,10 @@
   phone: phone,
   personal-site: personal-site,
   accent-color: "#26428b",
-  font: "Times New Roman",
+  // 按 glyph 逐个回退：西文走 Libertinus Serif（typst 内置，CI 与本机都有），
+  // 中文走 Noto Serif CJK SC（CI 由 fonts-noto-cjk 提供），Songti SC 兜住本机 macOS 预览。
+  // 列表里必须有 CJK 字体，否则会全部回退到 Libertinus 并渲染成错误字形。
+  font: ("Libertinus Serif", "Noto Serif CJK SC", "Songti SC"),
   paper: "us-letter",
   author-position: center,
   personal-info-position: center,

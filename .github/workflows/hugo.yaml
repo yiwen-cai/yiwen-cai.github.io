@@ -66,9 +66,17 @@ jobs:
         with:
           typst-version: "0.13.1"
 
+      # runner 镜像不带任何中日韩字体，中文简历会整篇回退到 Libertinus 渲染成错误字形
+      - name: Install CJK fonts
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends fonts-noto-cjk
+
       - name: Compile resume PDFs
         run: |
           mkdir -p static/resume
+          # 字体没装上就直接失败，避免又静默发布一份乱码简历
+          typst fonts | grep -q '^Noto Serif CJK SC$' || { echo "::error::缺少中文字体 Noto Serif CJK SC"; exit 1; }
           typst compile resume/main.typ static/resume/main.pdf
           typst compile resume/chinese.typ static/resume/chinese.pdf
 

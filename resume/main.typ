@@ -19,7 +19,8 @@
   phone: phone,
   personal-site: personal-site,
   accent-color: "#26428b",
-  font: "Times New Roman",
+  // CI runner 上没有 Times New Roman，写了也会静默回退到 Libertinus Serif，索性写实际生效的
+  font: "Libertinus Serif",
   paper: "us-letter",
   author-position: center,
   personal-info-position: center,
