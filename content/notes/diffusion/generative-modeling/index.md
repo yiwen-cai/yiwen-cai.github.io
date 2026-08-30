@@ -1,5 +1,5 @@
 +++
-title = '第 1 章｜生成建模即采样'
+title = 'MIT 6.S184: Flow Matching and Diffusion Models — 第 1 章：生成建模即采样'
 date = 2026-08-30
 draft = false
 summary = '生成模型的核心任务不是寻找唯一"最佳答案"，而是学习一个未知的数据分布，并从中产生新的样本。'
