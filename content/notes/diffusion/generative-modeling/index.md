@@ -1,6 +1,6 @@
 +++
 title = '第 1 章｜生成建模即采样'
-date = 2025-01-19
+date = 2026-08-30
 draft = false
 summary = '生成模型的核心任务不是寻找唯一"最佳答案"，而是学习一个未知的数据分布，并从中产生新的样本。'
 tags = ['Diffusion Models', 'Flow Matching', '生成建模']
