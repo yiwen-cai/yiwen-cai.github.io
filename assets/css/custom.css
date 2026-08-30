@@ -133,3 +133,34 @@ article {
 * {
   transition-duration: 0.2s !important;
 }
+
+/* --------------------------------------------------------------------------
+   6. Mermaid 图表样式
+   -------------------------------------------------------------------------- */
+
+/* Mermaid 图表容器放大，提升可读性 */
+.mermaid {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0;
+  overflow-x: auto;
+}
+
+/* Mermaid SVG 放大到合适尺寸 */
+.mermaid svg {
+  max-width: 100%;
+  height: auto;
+  min-height: 400px;
+  font-size: 16px;
+}
+
+/* Mermaid 文字放大 */
+.mermaid .nodeLabel,
+.mermaid .edgeLabel {
+  font-size: 16px !important;
+}
+
+/* 节点内文字 */
+.mermaid .node text {
+  font-size: 15px !important;
+}
