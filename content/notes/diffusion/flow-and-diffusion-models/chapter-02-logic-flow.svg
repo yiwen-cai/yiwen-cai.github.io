@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 980" width="720" height="980">
+  <!-- 背景 -->
+  <rect width="720" height="980" fill="#ffffff"/>
+  
+  <!-- 定义箭头 -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#1e1e1e" />
+    </marker>
+    <marker id="arrowhead-blue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#1971c2" />
+    </marker>
+    <marker id="arrowhead-purple" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#6741d9" />
+    </marker>
+  </defs>
+  
+  <!-- 步骤 1: 初始先验分布 -->
+  <rect x="250" y="40" width="220" height="85" rx="10" fill="#a5d8ff" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="360" y="70" text-anchor="middle" font-size="18" font-weight="600" fill="#1e1e1e">初始先验分布</text>
+  <text x="360" y="95" text-anchor="middle" font-size="16" fill="#1864ab">X₀ ~ p_init = 𝒩(0, I_d)</text>
+  <text x="360" y="115" text-anchor="middle" font-size="13" fill="#495057">（标准高斯白噪声）</text>
+  
+  <!-- 箭头 1: 进入神经网络向量场 -->
+  <line x1="360" y1="125" x2="360" y2="185" stroke="#1e1e1e" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="375" y="160" font-size="14" fill="#495057">作为动力学初始状态</text>
+  
+  <!-- 步骤 2: 核心组件 - 神经网络向量场 -->
+  <rect x="230" y="185" width="260" height="90" rx="10" fill="#fff3bf" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="360" y="215" text-anchor="middle" font-size="18" font-weight="600" fill="#1e1e1e">神经网络向量场</text>
+  <text x="360" y="242" text-anchor="middle" font-size="16" font-family="monospace" fill="#d9480f">u_t^θ(x)</text>
+  <text x="360" y="265" text-anchor="middle" font-size="13" fill="#495057">（参数化时变速度场 / 漂移项）</text>
+  
+  <!-- 分支箭头到两个模型 -->
+  <path d="M 270 275 Q 160 330 160 375" fill="none" stroke="#1971c2" stroke-width="2" marker-end="url(#arrowhead-blue)"/>
+  <text x="145" y="325" text-anchor="middle" font-size="14" font-weight="600" fill="#1971c2">确定性路径 (ODE)</text>
+  
+  <path d="M 450 275 Q 560 330 560 375" fill="none" stroke="#6741d9" stroke-width="2" marker-end="url(#arrowhead-purple)"/>
+  <text x="575" y="325" text-anchor="middle" font-size="14" font-weight="600" fill="#6741d9">随机路径 (SDE)</text>
+  
+  <!-- 步骤 3a: 流模型动力学 -->
+  <rect x="40" y="375" width="240" height="150" rx="10" fill="#b2f2bb" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="160" y="405" text-anchor="middle" font-size="18" font-weight="600" fill="#1e1e1e">流模型 (Flow Models)</text>
+  <text x="160" y="435" text-anchor="middle" font-size="15" fill="#2b8a3e">dX_t / dt = u_t^θ(X_t)</text>
+  <line x1="60" y1="450" x2="260" y2="450" stroke="#8ce99a" stroke-width="1.5"/>
+  <text x="160" y="475" text-anchor="middle" font-size="14" fill="#1e1e1e">连续变换：Flow Map ψ_t^θ</text>
+  <text x="160" y="500" text-anchor="middle" font-size="13" fill="#495057">数值解法：Euler / Heun</text>
+  
+  <!-- 步骤 3b: 扩散模型动力学 -->
+  <rect x="440" y="375" width="240" height="150" rx="10" fill="#d0bfff" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="560" y="405" text-anchor="middle" font-size="18" font-weight="600" fill="#1e1e1e">扩散模型 (Diffusion)</text>
+  <text x="560" y="435" text-anchor="middle" font-size="15" fill="#5f3dc4">dX_t = u_t^θ dt + σ_t dW_t</text>
+  <line x1="460" y1="450" x2="660" y2="450" stroke="#b197fc" stroke-width="1.5"/>
+  <text x="560" y="475" text-anchor="middle" font-size="14" fill="#1e1e1e">随机过程：漂移 + 布朗扩散</text>
+  <text x="560" y="500" text-anchor="middle" font-size="13" fill="#495057">数值解法：Euler-Maruyama</text>
+  
+  <!-- 中间退化连接线：σ_t = 0 -->
+  <line x1="440" y1="450" x2="280" y2="450" stroke="#e03131" stroke-width="2" stroke-dasharray="4,4" marker-end="url(#arrowhead)"/>
+  <rect x="315" y="435" width="90" height="30" rx="6" fill="#ffe3e3" stroke="#e03131" stroke-width="1"/>
+  <text x="360" y="455" text-anchor="middle" font-size="12" font-weight="600" fill="#c92a2a">σ_t = 0 退化</text>
+  
+  <!-- 步骤 4a: ODE 离散步与轨迹 -->
+  <rect x="40" y="565" width="240" height="110" rx="10" fill="#eebefa" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="160" y="595" text-anchor="middle" font-size="16" font-weight="600" fill="#1e1e1e">确定性单步更新</text>
+  <text x="160" y="625" text-anchor="middle" font-size="14" fill="#862e9c">X_{t+h} = X_t + h · u_t^θ(X_t)</text>
+  <text x="160" y="655" text-anchor="middle" font-size="13" fill="#495057">轨迹唯一 · 光滑保拓扑</text>
+  
+  <!-- 步骤 4b: SDE 离散步与轨迹 -->
+  <rect x="440" y="565" width="240" height="110" rx="10" fill="#ffd8a8" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="560" y="595" text-anchor="middle" font-size="16" font-weight="600" fill="#1e1e1e">随机单步更新</text>
+  <text x="560" y="625" text-anchor="middle" font-size="14" fill="#d9480f">X_{t+h} = X_t + h u_t^θ + σ_t√h · ϵ</text>
+  <text x="560" y="655" text-anchor="middle" font-size="13" fill="#495057">随机系综 · ϵ ~ 𝒩(0, I_d)</text>
+  
+  <!-- 连接线 3a -> 4a, 3b -> 4b -->
+  <line x1="160" y1="525" x2="160" y2="565" stroke="#1e1e1e" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="560" y1="525" x2="560" y2="565" stroke="#1e1e1e" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- 汇聚箭头到终点 -->
+  <path d="M 160 675 Q 160 760 300 810" fill="none" stroke="#1e1e1e" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="195" y="745" font-size="13" fill="#495057">积分到 t=1</text>
+  
+  <path d="M 560 675 Q 560 760 420 810" fill="none" stroke="#1e1e1e" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="475" y="745" font-size="13" fill="#495057">积分到 t=1</text>
+  
+  <!-- 步骤 5: 目标数据分布 -->
+  <rect x="250" y="800" width="220" height="95" rx="10" fill="#c3fae8" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="360" y="830" text-anchor="middle" font-size="18" font-weight="600" fill="#1e1e1e">目标数据分布</text>
+  <text x="360" y="858" text-anchor="middle" font-size="16" font-weight="600" fill="#099268">X₁ ~ p_data</text>
+  <text x="360" y="880" text-anchor="middle" font-size="13" fill="#495057">（高质量生成样本）</text>
+  
+  <!-- 底部说明 -->
+  <rect x="110" y="920" width="500" height="36" rx="6" fill="#f1f3f5"/>
+  <text x="360" y="943" text-anchor="middle" font-size="13" fill="#495057">📌 核心分工：本章建立连续时间采样动力学；第 3、4 章讨论如何训练网络向量场</text>
+</svg>
