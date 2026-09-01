@@ -82,7 +82,7 @@ showReadingTime = false
 
 - **KaTeX 开关**：含公式的笔记，必须在正文最开头（front matter 之后、第一段之前）单独一行写 `{{< katex >}}`。Blowfish 按需加载 KaTeX，不写这行公式不渲染。
 - **不要用 Mermaid**：本站 Mermaid 渲染效果差，已弃用。流程图用 ` ```text ` 文字示意图，对比/矩阵型内容一律用 Markdown 表格或有序列表。
-- **正文宽度**：`assets/css/custom.css` 已把详情页正文放宽到 900px（同时解开 Blowfish 两层 `65ch` 限制，并把 TOC 右栏收到 15rem）。代码块和表格写原生 Markdown 即可，不需要额外处理。
+- **正文与目录宽度**：`assets/css/custom.css` 已优化全站容器与笔记详情页排版：全站容器放宽至 1440px、正文保持黄金阅读宽度（~54rem/864px，解开 Blowfish 原版两层 `65ch` 限制）、TOC 目录放宽到 18.5rem–23rem（296px–368px），并优化了目录缩进、断词与间距，完整展示长标题。代码块和表格写原生 Markdown 即可，不需要额外处理。
 - **单 `$` 行内公式**：`assets/js/katex-render.js` 覆盖了主题同名文件，追加了 `$...$` 定界符。定界符顺序里 `$` 必须放最后，否则 `$$` 会被拆成两个 `$`。验证覆盖是否生效：构建后 `rg -o 'left:"[^"]{1,3}"' public/js/main.bundle.min.*.js` 应出现 4 个定界符且 `$` 在末位（主题原版只有 3 个）。
 - **评论区**：`layouts/partials/comments.html` 覆盖了主题 partial，接的是 Giscus，并有一段 JS 跟随站点亮/暗模式切换 iframe 主题。这是目前**唯一**的 `layouts/` 覆盖。
 

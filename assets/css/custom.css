@@ -43,17 +43,44 @@ article li {
 }
 
 /* --------------------------------------------------------------------------
-   2. 笔记详情页正文宽度加宽（~900px）
+   2. 笔记详情页与全站容器排版优化
    --------------------------------------------------------------------------
-   背景：Blowfish single.html 的正文被两层 max-width: 65ch 卡住——
-     (1) <section class="prose ... lg:flex-row">         （main.css .prose）
-     (2) <div class="article-content max-w-prose">       （main.css .max-w-prose）
-   必须同时放开两层，正文才能真正变宽。
-   selector 用 .article-content 锚定（grep 确认只在 single.html 第49行出现，
-   首页/列表页都没有），配合 :has() 命中外层 .prose section。
-   注：custom.css 不在 @layer 内，Tailwind v4 下未分层样式优先级高于
-       @layer utilities/components，无需 !important 即可覆盖 65ch。
+   背景：
+     (1) Blowfish 默认 body 的 max-w-7xl(1280px) + lg:px-32(256px padding)
+         导致桌面端可用宽度仅 1024px，正文与右侧目录（TOC）严重拥挤。
+     (2) 正文被 65ch 卡住，TOC 原来被收缩到 15rem(240px)，再加上多层内边距
+         嵌套，导致 TOC 文本宽度仅剩 ~150px-180px，长标题严重折行或被截断。
+   优化：
+     (1) 适度放宽 body 最大宽度并收敛桌面端过大的 padding，释放 ~250px 空间；
+     (2) 正文保持在 ~52-54rem(832-864px) 的黄金阅读宽度；
+     (3) TOC 栏目放宽到 18.5rem-23rem(296-368px)，多级缩进紧凑化，完整显示标题。
    -------------------------------------------------------------------------- */
+
+/* 全站容器最大宽度放宽到 90rem(1440px)，桌面端边距合理收敛 */
+body {
+  max-width: 90rem;
+}
+
+@media (min-width: 1024px) {
+  body {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  body {
+    padding-left: 3.5rem;
+    padding-right: 3.5rem;
+  }
+}
+
+/* 笔记详情页头部（标题、日期等）与页脚（分页、评论区）放宽与正文对齐 */
+header#single_header,
+article > footer.print\:hidden,
+article > footer {
+  max-width: 54rem;
+}
 
 /* (1) 外层 <section class="prose"> 的 65ch → 放开。
    :has(.article-content) 精确命中笔记/文章详情页，不影响首页 <section class="prose w-full">。 */
@@ -61,22 +88,106 @@ section.prose:has(.article-content) {
   max-width: none;
 }
 
-/* (2) 正文内层 .article-content 自身的 max-w-prose(65ch) → 900px 软上限 */
+/* (2) 正文内层 .article-content 自身的 max-w-prose(65ch) → 54rem(~864px) 黄金上限 */
 .article-content {
-  max-width: 56.25rem; /* 900px */
+  max-width: 54rem;
+  width: 100%;
 }
 
-/* (3) 正文列父容器 div.max-w-fit 解除 fit-content 上限，让 900px 生效 */
+/* (3) 正文列父容器自适应伸缩，最大不超过 54rem */
 div:has(> .article-content) {
-  max-width: 56.25rem;
+  flex: 1 1 0%;
+  min-width: 0;
+  max-width: 54rem;
 }
 
-/* (4) TOC 右栏从 18rem(288px) 收窄到 15rem(240px)，给正文让位。
-   仅 lg(1024px+) 桌面端生效；移动端 TOC 在正文上方不受影响。 */
-@media (width >= 1024px) {
+/* (4) TOC 右栏宽度优化：
+   在 lg/xl/2xl 下分别提供 18.5rem(296px) / 21rem(336px) / 23rem(368px) 宽裕空间，
+   并固定 flex-shrink 防止被正文挤压 */
+@media (min-width: 1024px) {
+  .order-first.lg\:order-last,
   .lg\:max-w-2xs {
-    max-width: 15rem;
+    flex: 0 0 auto;
+    width: 18.5rem;
+    max-width: 22rem;
   }
+}
+
+@media (min-width: 1280px) {
+  .order-first.lg\:order-last,
+  .lg\:max-w-2xs {
+    width: 21rem;
+    max-width: 24rem;
+  }
+}
+
+@media (min-width: 1536px) {
+  .order-first.lg\:order-last,
+  .lg\:max-w-2xs {
+    width: 23rem;
+    max-width: 26rem;
+  }
+}
+
+/* (5) TOC 内部文字排版、嵌套缩进与交互优化 */
+.toc {
+  padding-left: 0.75rem;
+}
+
+#TOCView > div {
+  min-width: 0;
+  padding-left: 0.75rem;
+  padding-right: 0.5rem;
+}
+
+#TableOfContents {
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+#TableOfContents ul {
+  padding-inline-start: 0;
+  margin: 0;
+}
+
+#TableOfContents li {
+  margin-top: 0.35rem;
+  margin-bottom: 0.35rem;
+}
+
+/* 缩进优化：由原版 16px 收敛到 0.8rem(12.8px)，让 2-4 级子标题有充裕水平空间 */
+.toc ul ul,
+#TableOfContents ul ul {
+  padding-left: 0.8rem !important;
+}
+
+#TableOfContents a {
+  display: inline-block;
+  color: rgb(105 105 115);
+  text-decoration: none;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  transition: color 0.15s ease, font-weight 0.15s ease;
+}
+
+.dark #TableOfContents a {
+  color: rgb(165 165 175);
+}
+
+#TableOfContents a:hover,
+#TableOfContents a.active {
+  color: var(--color-primary-600, #0284c7);
+  font-weight: 500;
+}
+
+.dark #TableOfContents a:hover,
+.dark #TableOfContents a.active {
+  color: var(--color-primary-400, #38bdf8);
+}
+
+#TOCView {
+  max-height: calc(100vh - 120px);
+  scrollbar-width: thin;
 }
 
 /* 段落间距明确留白 */
