@@ -10,7 +10,7 @@ showTableOfContents = true
 
 {{< katex >}}
 
-> **[MIT 6.S184: Flow Matching and Diffusion Models](https://diffusion.csail.mit.edu/)** 课程笔记（v1.3）
+> **[MIT 6.S184: Flow Matching and Diffusion Models](https://diffusion.csail.mit.edu/)** 课程笔记
 
 > 🎯 **本章一句话总结：** 生成模型的核心任务不是寻找唯一的「最佳答案」，而是学习一个未知的数据分布 $p_{\mathrm{data}}$，并从中产生新的样本。
 
@@ -419,4 +419,3 @@ $$
 
 - 双语讲义第 1 章（PDF 印刷页 3–6）：[An Introduction to Flow Matching and Diffusion Models｜Kimi + DeepSeek 双语版](https://diffusion.csail.mit.edu/)
 - [MIT 6.S184 课程网站](https://diffusion.csail.mit.edu/)
-- 笔记版本：v1.3（2026-09-01 更新）
