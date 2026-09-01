@@ -157,9 +157,7 @@ $$
 
 训练环中，奖励模型（或规则）只负责产出标量或过程奖励 $r$，本身并不直接对策略做监督梯度更新——真正驱动策略更新的是优势与 PPO/GRPO 目标：
 
-```text
-prompt → π 采样回复(s) → RM/规则打分得 r → 算 Â（PPO: critic；GRPO: 组内相对）→ clip 目标更新 π
-```
+![RLHF / RLVR 训练环：奖励只提供信号，优势驱动更新](rlhf-training-loop.svg)
 
 DPO 路径则可以绕开这个显式 RM + RL 的训练环。
 

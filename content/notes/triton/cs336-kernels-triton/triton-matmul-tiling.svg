@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 380" width="700" height="380">
+  <!-- 背景 -->
+  <rect width="700" height="380" fill="#ffffff"/>
+
+  <defs>
+    <marker id="tile-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#495057" />
+    </marker>
+  </defs>
+
+  <!-- 标题 -->
+  <text x="350" y="28" text-anchor="middle" font-size="17" font-weight="600" fill="#212529">
+    Triton Matmul Tiling：五步策略 + Arithmetic Intensity 改善
+  </text>
+
+  <!-- 左侧：五步流程卡片 -->
+  <g transform="translate(30, 50)">
+    <rect width="300" height="290" rx="10" fill="#f8f9fa" stroke="#dee2e6" stroke-width="2"/>
+    <text x="150" y="22" text-anchor="middle" font-size="14" font-weight="600" fill="#495057">Tiling 五步流程</text>
+
+    <!-- Step 1 -->
+    <g transform="translate(15, 35)">
+      <rect width="270" height="42" rx="7" fill="#e7f5ff" stroke="#74c0fc" stroke-width="1.5"/>
+      <circle cx="16" cy="21" r="10" fill="#1971c2"/>
+      <text x="16" y="25" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">1</text>
+      <text x="34" y="16" font-size="11.5" fill="#1864ab" font-weight="600">划分输出 C 为 tile（如 64×64）</text>
+      <text x="34" y="32" font-size="10" fill="#495057">每个 thread block 负责一个输出 tile</text>
+    </g>
+
+    <!-- Step 2 -->
+    <g transform="translate(15, 85)">
+      <rect width="270" height="42" rx="7" fill="#e6fcf5" stroke="#63e6be" stroke-width="1.5"/>
+      <circle cx="16" cy="21" r="10" fill="#099268"/>
+      <text x="16" y="25" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">2</text>
+      <text x="34" y="16" font-size="11.5" fill="#087f5b" font-weight="600">加载 A tile (64×32) 和 B tile (32×64)</text>
+      <text x="34" y="32" font-size="10" fill="#495057">从 HBM → Shared Memory</text>
+    </g>
+
+    <!-- Step 3 -->
+    <g transform="translate(15, 135)">
+      <rect width="270" height="42" rx="7" fill="#fff4e6" stroke="#ffc078" stroke-width="1.5"/>
+      <circle cx="16" cy="21" r="10" fill="#e8590c"/>
+      <text x="16" y="25" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">3</text>
+      <text x="34" y="16" font-size="11.5" fill="#d9480f" font-weight="600">在片上计算这小块 matmul</text>
+      <text x="34" y="32" font-size="10" fill="#495057">累加到输出 tile 的部分和（accumulator）</text>
+    </g>
+
+    <!-- Step 4 -->
+    <g transform="translate(15, 185)">
+      <rect width="270" height="42" rx="7" fill="#ffe3e3" stroke="#ffa8a8" stroke-width="1.5"/>
+      <circle cx="16" cy="21" r="10" fill="#c92a2a"/>
+      <text x="16" y="25" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">4</text>
+      <text x="34" y="16" font-size="11.5" fill="#c92a2a" font-weight="600">重复步骤 2-3 直至覆盖整个 K</text>
+      <text x="34" y="32" font-size="10" fill="#495057">逐块推进 A 和 B 的 K 维指针</text>
+    </g>
+
+    <!-- Step 5 -->
+    <g transform="translate(15, 235)">
+      <rect width="270" height="42" rx="7" fill="#f3f0ff" stroke="#b197fc" stroke-width="1.5"/>
+      <circle cx="16" cy="21" r="10" fill="#7950f2"/>
+      <text x="16" y="25" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">5</text>
+      <text x="34" y="16" font-size="11.5" fill="#5f3dc4" font-weight="600">写回最终输出 C tile 到 HBM</text>
+      <text x="34" y="32" font-size="10" fill="#495057">可选：fused ReLU / 其他激活</text>
+    </g>
+  </g>
+
+  <!-- 右侧：Arithmetic Intensity 对比 -->
+  <g transform="translate(360, 50)">
+    <rect width="310" height="290" rx="10" fill="#fff5f5" stroke="#ffc9c9" stroke-width="2"/>
+    <text x="155" y="22" text-anchor="middle" font-size="14" font-weight="600" fill="#c92a2a">Arithmetic Intensity 改善</text>
+
+    <!-- Naive 方式 -->
+    <g transform="translate(20, 40)">
+      <rect width="270" height="90" rx="8" fill="#ffffff" stroke="#dee2e6" stroke-width="1.5"/>
+      <text x="12" y="20" font-size="12" font-weight="600" fill="#c92a2a">Naive Matmul（无 Tiling）</text>
+      <text x="12" y="38" font-size="10.5" fill="#495057">• 每次计算 C[m,n] 从 HBM 读一行 A、一列 B</text>
+      <text x="12" y="53" font-size="10.5" fill="#495057">• M×K×N 次 HBM 读，只复用一次</text>
+      <text x="12" y="68" font-size="10.5" fill="#495057">• Arithmetic Intensity ≈ <tspan font-family="monospace" fill="#e03131">O(1)</tspan></text>
+      <text x="12" y="83" font-size="10.5" fill="#c92a2a" font-weight="600">→ Memory-bound，GPU 算力闲置</text>
+    </g>
+
+    <!-- Tiling 方式 -->
+    <g transform="translate(20, 145)">
+      <rect width="270" height="110" rx="8" fill="#ffffff" stroke="#dee2e6" stroke-width="1.5"/>
+      <text x="12" y="20" font-size="12" font-weight="600" fill="#2b8a3e">Tiling Matmul（Shared Memory）</text>
+      <text x="12" y="38" font-size="10.5" fill="#495057">• 每个 tile 只读一次 HBM</text>
+      <text x="12" y="53" font-size="10.5" fill="#495057">• 在 shared memory 中复用 tile_size 次</text>
+      <text x="12" y="68" font-size="10.5" fill="#495057">• Arithmetic Intensity ≈ <tspan font-family="monospace" fill="#2f9e44">O(tile_size)</tspan></text>
+      <text x="12" y="83" font-size="10.5" fill="#495057">  典型 64×64 tile → 复用 64 倍</text>
+      <text x="12" y="98" font-size="10.5" fill="#2b8a3e" font-weight="600">→ Compute-bound，充分利用 FLOPs</text>
+    </g>
+
+    <!-- 底部公式 -->
+    <text x="155" y="278" text-anchor="middle" font-size="10" fill="#868e96" font-family="monospace">
+      AI = FLOPs / Bytes moved
+    </text>
+  </g>
+
+  <!-- 底部总结 -->
+  <text x="350" y="370" text-anchor="middle" font-size="11.5" fill="#495057">
+    Tiling 的本质：减少 HBM 访问次数，提高片上数据复用率，从 memory-bound 转向 compute-bound
+  </text>
+</svg>

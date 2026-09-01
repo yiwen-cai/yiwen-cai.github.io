@@ -64,15 +64,7 @@ GPU 像大量专门工人，每个人做简单操作，但总吞吐极高。
 
 GPU 由多个 Streaming Multiprocessors（SM）组成：
 
-```
-GPU
-└── many SMs
-    ├── CUDA cores / SPs
-    ├── Tensor Cores
-    ├── registers
-    ├── shared memory / L1 cache
-    └── warp schedulers
-```
+![GPU 硬件结构：从芯片到计算单元](gpu-hardware-structure.svg)
 
 | 术语 | 含义 |
 |---|---|
@@ -116,15 +108,7 @@ GPU 适合规则、密集、统一的计算模式；不适合大量不规则分�
 
 从快到慢：
 
-```
-registers
-  ↓
-shared memory / L1 cache
-  ↓
-L2 cache
-  ↓
-HBM / global memory
-```
+![GPU 内存层次：速度与容量的权衡](gpu-memory-hierarchy.svg)
 
 | 层级 | 位置 | 特点 |
 |---|---|---|

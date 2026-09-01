@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="720" height="340">
+  <!-- 背景 -->
+  <rect width="720" height="340" fill="#ffffff"/>
+
+  <defs>
+    <marker id="pa-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#868e96" />
+    </marker>
+  </defs>
+
+  <!-- 标题 -->
+  <text x="360" y="26" text-anchor="middle" font-size="17" font-weight="600" fill="#212529">
+    PagedAttention：逻辑连续、物理分散
+  </text>
+  <text x="360" y="45" text-anchor="middle" font-size="10.5" fill="#868e96">
+    借操作系统虚拟内存分页思想，用 block table 解耦逻辑视图与物理布局
+  </text>
+
+  <!-- 三栏标题 -->
+  <text x="112" y="72" text-anchor="middle" font-size="12" font-weight="600" fill="#1864ab">逻辑 KV blocks</text>
+  <text x="112" y="88" text-anchor="middle" font-size="9.5" fill="#868e96">请求视角：连续</text>
+
+  <text x="360" y="72" text-anchor="middle" font-size="12" font-weight="600" fill="#d9480f">Block Table（页表）</text>
+  <text x="360" y="88" text-anchor="middle" font-size="9.5" fill="#868e96">维护映射关系</text>
+
+  <text x="608" y="72" text-anchor="middle" font-size="12" font-weight="600" fill="#087f5b">GPU 物理块</text>
+  <text x="608" y="88" text-anchor="middle" font-size="9.5" fill="#868e96">显存实际布局：分散</text>
+
+  <!-- 逻辑块列 -->
+  <g transform="translate(50, 100)">
+    <rect width="124" height="34" rx="5" fill="#e7f5ff" stroke="#74c0fc" stroke-width="1.6"/>
+    <text x="62" y="22" text-anchor="middle" font-size="11" font-family="monospace" fill="#1864ab">logical block 0</text>
+  </g>
+  <g transform="translate(50, 144)">
+    <rect width="124" height="34" rx="5" fill="#e7f5ff" stroke="#74c0fc" stroke-width="1.6"/>
+    <text x="62" y="22" text-anchor="middle" font-size="11" font-family="monospace" fill="#1864ab">logical block 1</text>
+  </g>
+  <g transform="translate(50, 188)">
+    <rect width="124" height="34" rx="5" fill="#e7f5ff" stroke="#74c0fc" stroke-width="1.6"/>
+    <text x="62" y="22" text-anchor="middle" font-size="11" font-family="monospace" fill="#1864ab">logical block 2</text>
+  </g>
+  <g transform="translate(50, 232)">
+    <rect width="124" height="34" rx="5" fill="#e7f5ff" stroke="#74c0fc" stroke-width="1.6"/>
+    <text x="62" y="22" text-anchor="middle" font-size="11" font-family="monospace" fill="#1864ab">logical block 3</text>
+  </g>
+
+  <!-- 页表列 -->
+  <g transform="translate(288, 100)">
+    <rect width="144" height="34" rx="5" fill="#fff4e6" stroke="#ffc078" stroke-width="1.6"/>
+    <text x="72" y="22" text-anchor="middle" font-size="11" font-family="monospace" fill="#d9480f">0  →  物理 7</text>
+  </g>
+  <g transform="translate(288, 144)">
+    <rect width="144" height="34" rx="5" fill="#fff4e6" stroke="#ffc078" stroke-width="1.6"/>
+    <text x="72" y="22" text-anchor="middle" font-size="11" font-family="monospace" fill="#d9480f">1  →  物理 2</text>
+  </g>
+  <g transform="translate(288, 188)">
+    <rect width="144" height="34" rx="5" fill="#fff4e6" stroke="#ffc078" stroke-width="1.6"/>
+    <text x="72" y="22" text-anchor="middle" font-size="11" font-family="monospace" fill="#d9480f">2  →  物理 9</text>
+  </g>
+  <g transform="translate(288, 232)">
+    <rect width="144" height="34" rx="5" fill="#fff4e6" stroke="#ffc078" stroke-width="1.6"/>
+    <text x="72" y="22" text-anchor="middle" font-size="11" font-family="monospace" fill="#d9480f">3  →  物理 4</text>
+  </g>
+
+  <!-- 物理块列（顺序打乱，体现分散） -->
+  <g transform="translate(546, 100)">
+    <rect width="124" height="34" rx="5" fill="#e6fcf5" stroke="#63e6be" stroke-width="1.6"/>
+    <text x="62" y="22" text-anchor="middle" font-size="11" font-family="monospace" fill="#087f5b">phys block 7</text>
+  </g>
+  <g transform="translate(546, 144)">
+    <rect width="124" height="34" rx="5" fill="#e6fcf5" stroke="#63e6be" stroke-width="1.6"/>
+    <text x="62" y="22" text-anchor="middle" font-size="11" font-family="monospace" fill="#087f5b">phys block 2</text>
+  </g>
+  <g transform="translate(546, 188)">
+    <rect width="124" height="34" rx="5" fill="#e6fcf5" stroke="#63e6be" stroke-width="1.6"/>
+    <text x="62" y="22" text-anchor="middle" font-size="11" font-family="monospace" fill="#087f5b">phys block 9</text>
+  </g>
+  <g transform="translate(546, 232)">
+    <rect width="124" height="34" rx="5" fill="#e6fcf5" stroke="#63e6be" stroke-width="1.6"/>
+    <text x="62" y="22" text-anchor="middle" font-size="11" font-family="monospace" fill="#087f5b">phys block 4</text>
+  </g>
+
+  <!-- 逻辑 → 页表 箭头 -->
+  <line x1="180" y1="117" x2="282" y2="117" stroke="#868e96" stroke-width="1.5" marker-end="url(#pa-arrow)"/>
+  <line x1="180" y1="161" x2="282" y2="161" stroke="#868e96" stroke-width="1.5" marker-end="url(#pa-arrow)"/>
+  <line x1="180" y1="205" x2="282" y2="205" stroke="#868e96" stroke-width="1.5" marker-end="url(#pa-arrow)"/>
+  <line x1="180" y1="249" x2="282" y2="249" stroke="#868e96" stroke-width="1.5" marker-end="url(#pa-arrow)"/>
+
+  <!-- 页表 → 物理 箭头 -->
+  <line x1="438" y1="117" x2="540" y2="117" stroke="#868e96" stroke-width="1.5" marker-end="url(#pa-arrow)"/>
+  <line x1="438" y1="161" x2="540" y2="161" stroke="#868e96" stroke-width="1.5" marker-end="url(#pa-arrow)"/>
+  <line x1="438" y1="205" x2="540" y2="205" stroke="#868e96" stroke-width="1.5" marker-end="url(#pa-arrow)"/>
+  <line x1="438" y1="249" x2="540" y2="249" stroke="#868e96" stroke-width="1.5" marker-end="url(#pa-arrow)"/>
+
+  <!-- 底部收益说明 -->
+  <g transform="translate(50, 284)">
+    <rect width="620" height="44" rx="7" fill="#f8f9fa" stroke="#ced4da" stroke-width="1.3"/>
+    <text x="14" y="19" font-size="10.5" fill="#495057">
+      • <tspan font-weight="600">消除外部碎片</tspan>：按固定大小块分配，任何空闲块都能被复用，无需连续大段显存
+    </text>
+    <text x="14" y="35" font-size="10.5" fill="#495057">
+      • <tspan font-weight="600">支持前缀共享</tspan>：多个请求的相同前缀可指向同一物理块，copy-on-write 才分裂
+    </text>
+  </g>
+</svg>

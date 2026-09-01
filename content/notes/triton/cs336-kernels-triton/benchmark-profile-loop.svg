@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 260" width="560" height="260">
+  <!-- 背景 -->
+  <rect width="560" height="260" fill="#ffffff"/>
+
+  <defs>
+    <marker id="cycle-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1971c2" />
+    </marker>
+    <linearGradient id="step-measure" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#e7f5ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d0ebff;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="step-opt" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#fff4e6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ffe8cc;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="step-verify" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#e6fcf5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#c3fae8;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- 标题 -->
+  <text x="280" y="28" text-anchor="middle" font-size="16" font-weight="600" fill="#212529">
+    优化方法论：测量驱动的迭代循环
+  </text>
+
+  <!-- 步骤 1: Benchmark & Profile -->
+  <g transform="translate(30, 60)">
+    <rect width="150" height="78" rx="10" fill="url(#step-measure)" stroke="#4dabf7" stroke-width="2"/>
+    <circle cx="24" cy="24" r="13" fill="#1971c2"/>
+    <text x="24" y="29" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">1</text>
+    <text x="46" y="29" font-size="12.5" font-weight="600" fill="#1864ab">Benchmark</text>
+    <text x="46" y="45" font-size="12.5" font-weight="600" fill="#1864ab">&amp; Profile</text>
+    <text x="14" y="66" font-size="10.5" fill="#495057">建立基线，定位真正的瓶颈</text>
+  </g>
+
+  <!-- 箭头 1→2 -->
+  <line x1="188" y1="99" x2="218" y2="99" stroke="#1971c2" stroke-width="2.2" marker-end="url(#cycle-arrow)"/>
+
+  <!-- 步骤 2: 优化 -->
+  <g transform="translate(226, 60)">
+    <rect width="120" height="78" rx="10" fill="url(#step-opt)" stroke="#ff922b" stroke-width="2"/>
+    <circle cx="24" cy="24" r="13" fill="#e8590c"/>
+    <text x="24" y="29" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">2</text>
+    <text x="46" y="29" font-size="12.5" font-weight="600" fill="#d9480f">做优化</text>
+    <text x="14" y="52" font-size="10.5" fill="#495057">只改瓶颈处，</text>
+    <text x="14" y="66" font-size="10.5" fill="#495057">一次一个变量</text>
+  </g>
+
+  <!-- 箭头 2→3 -->
+  <line x1="354" y1="99" x2="384" y2="99" stroke="#1971c2" stroke-width="2.2" marker-end="url(#cycle-arrow)"/>
+
+  <!-- 步骤 3: 再次验证 -->
+  <g transform="translate(392, 60)">
+    <rect width="138" height="78" rx="10" fill="url(#step-verify)" stroke="#20c997" stroke-width="2"/>
+    <circle cx="24" cy="24" r="13" fill="#0ca678"/>
+    <text x="24" y="29" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">3</text>
+    <text x="46" y="29" font-size="12.5" font-weight="600" fill="#087f5b">再次测量</text>
+    <text x="14" y="52" font-size="10.5" fill="#495057">确认真的变快了，</text>
+    <text x="14" y="66" font-size="10.5" fill="#495057">而非主观感觉</text>
+  </g>
+
+  <!-- 回环箭头 3→1 -->
+  <path d="M 461 146 L 461 178 Q 461 190, 449 190 L 117 190 Q 105 190, 105 178 L 105 154"
+        fill="none" stroke="#1971c2" stroke-width="2.2" stroke-dasharray="6,4" marker-end="url(#cycle-arrow)"/>
+  <text x="283" y="183" text-anchor="middle" font-size="11" fill="#1971c2">发现新瓶颈 → 继续迭代</text>
+
+  <!-- 底部要点 -->
+  <g transform="translate(60, 210)">
+    <rect width="440" height="36" rx="7" fill="#fff5f5" stroke="#ffa8a8" stroke-width="1.4"/>
+    <text x="220" y="23" text-anchor="middle" font-size="11.5" fill="#c92a2a">
+      跳过步骤 1 直接优化，等于在猜；跳过步骤 3，等于不知道有没有改进
+    </text>
+  </g>
+</svg>

@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 740 340" width="740" height="340">
+  <!-- 背景 -->
+  <rect width="740" height="340" fill="#ffffff"/>
+  <defs>
+    <linearGradient id="left-card" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#e7f5ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d0ebff;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="right-card" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#fff4e6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ffe8cc;stop-opacity:1" />
+    </linearGradient>
+    
+    <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1971c2" />
+    </marker>
+    <marker id="arr-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#fd7e14" />
+    </marker>
+  </defs>
+
+  <!-- 标题 -->
+  <text x="370" y="30" text-anchor="middle" font-size="17" font-weight="600" fill="#212529">
+    单点积分（轨迹）vs. 全空间积分（Flow）
+  </text>
+
+  <!-- 左侧：单点积分 -->
+  <g transform="translate(40, 60)">
+    <rect width="310" height="260" rx="12" fill="url(#left-card)" stroke="#74c0fc" stroke-width="2"/>
+    
+    <text x="155" y="30" text-anchor="middle" font-size="15" font-weight="600" fill="#1864ab">
+      单点积分（Point Integration）
+    </text>
+    
+    <!-- 初始点 -->
+    <circle cx="80" cy="80" r="6" fill="#1971c2" stroke="#1864ab" stroke-width="2"/>
+    <text x="80" y="105" text-anchor="middle" font-size="13" font-weight="600" fill="#1864ab">x₀</text>
+    
+    <!-- 轨迹曲线 -->
+    <path d="M 80 80 Q 120 100, 160 95 T 240 110" fill="none" stroke="#1971c2" stroke-width="3" stroke-linecap="round"/>
+    
+    <!-- 时间标注 -->
+    <circle cx="160" cy="95" r="5" fill="#4dabf7" stroke="#1971c2" stroke-width="1.5"/>
+    <text x="160" y="85" text-anchor="middle" font-size="11" fill="#1864ab">t=0.5</text>
+    
+    <circle cx="240" cy="110" r="6" fill="#1971c2" stroke="#1864ab" stroke-width="2"/>
+    <text x="240" y="130" text-anchor="middle" font-size="13" font-weight="600" fill="#1864ab">X_t</text>
+    
+    <!-- 箭头动态感 -->
+    <path d="M 100 88 L 108 90" stroke="#1971c2" stroke-width="2" marker-end="url(#arr-blue)"/>
+    <path d="M 180 98 L 188 100" stroke="#1971c2" stroke-width="2" marker-end="url(#arr-blue)"/>
+    
+    <!-- 函数表达式 -->
+    <rect x="20" y="150" width="270" height="45" rx="6" fill="#e7f5ff" stroke="#a5d8ff" stroke-width="1"/>
+    <text x="155" y="170" text-anchor="middle" font-size="13" fill="#1864ab">
+      轨迹函数：<tspan font-family="monospace" font-weight="600">t ↦ X_t</tspan>
+    </text>
+    <text x="155" y="187" text-anchor="middle" font-size="12" fill="#495057">
+      一维时间曲线（1D → d维空间）
+    </text>
+    
+    <!-- 底部说明 -->
+    <text x="155" y="220" text-anchor="middle" font-size="12" fill="#495057">
+      ✦ 固定初值 x₀
+    </text>
+    <text x="155" y="238" text-anchor="middle" font-size="12" fill="#495057">
+      ✦ 跟踪单个粒子随时间演化
+    </text>
+  </g>
+
+  <!-- 右侧：全空间积分 -->
+  <g transform="translate(390, 60)">
+    <rect width="310" height="260" rx="12" fill="url(#right-card)" stroke="#ffc078" stroke-width="2"/>
+    
+    <text x="155" y="30" text-anchor="middle" font-size="15" font-weight="600" fill="#d9480f">
+      全空间积分（Full-space Integration）
+    </text>
+    
+    <!-- 多个初始点 -->
+    <circle cx="60" cy="70" r="4" fill="#fd7e14" stroke="#d9480f" stroke-width="1.5"/>
+    <circle cx="90" cy="85" r="4" fill="#fd7e14" stroke="#d9480f" stroke-width="1.5"/>
+    <circle cx="75" cy="100" r="4" fill="#fd7e14" stroke="#d9480f" stroke-width="1.5"/>
+    <circle cx="110" cy="75" r="4" fill="#fd7e14" stroke="#d9480f" stroke-width="1.5"/>
+    
+    <text x="85" y="125" text-anchor="middle" font-size="12" font-weight="600" fill="#d9480f">所有 x₀</text>
+    
+    <!-- Flow 映射箭头 -->
+    <path d="M 130 85 L 168 85" stroke="#fd7e14" stroke-width="3" marker-end="url(#arr-orange)" stroke-dasharray="5,3"/>
+    <text x="149" y="78" text-anchor="middle" font-size="12" font-weight="600" fill="#d9480f">ψ_t</text>
+    
+    <!-- 映射后的点云 -->
+    <circle cx="200" cy="75" r="4" fill="#ff922b" stroke="#fd7e14" stroke-width="1.5"/>
+    <circle cx="230" cy="90" r="4" fill="#ff922b" stroke="#fd7e14" stroke-width="1.5"/>
+    <circle cx="215" cy="105" r="4" fill="#ff922b" stroke="#fd7e14" stroke-width="1.5"/>
+    <circle cx="250" cy="80" r="4" fill="#ff922b" stroke="#fd7e14" stroke-width="1.5"/>
+    
+    <text x="225" y="125" text-anchor="middle" font-size="12" font-weight="600" fill="#d9480f">ψ_t(x₀)</text>
+    
+    <!-- 函数表达式 -->
+    <rect x="20" y="150" width="270" height="45" rx="6" fill="#fff4e6" stroke="#ffd8a8" stroke-width="1"/>
+    <text x="155" y="170" text-anchor="middle" font-size="13" fill="#d9480f">
+      映射函数：<tspan font-family="monospace" font-weight="600">x₀ ↦ ψ_t(x₀)</tspan>
+    </text>
+    <text x="155" y="187" text-anchor="middle" font-size="12" fill="#495057">
+      高维空间变换（d维 → d维）
+    </text>
+    
+    <!-- 底部说明 -->
+    <text x="155" y="220" text-anchor="middle" font-size="12" fill="#495057">
+      ✦ 固定时刻 t
+    </text>
+    <text x="155" y="238" text-anchor="middle" font-size="12" fill="#495057">
+      ✦ 描述整个分布如何变形
+    </text>
+  </g>
+
+  <!-- 底部总结 -->
+  <g transform="translate(60, 335)">
+    <rect width="620" height="28" rx="6" fill="#f1f3f5" stroke="#ced4da" stroke-width="1"/>
+    <text x="310" y="18" text-anchor="middle" font-size="12" fill="#495057">
+      采样算法实现时只需「单点积分」；Flow Map 用于理论推导（变量替换、概率密度演化）
+    </text>
+  </g>
+</svg>

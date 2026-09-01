@@ -42,17 +42,7 @@ showTableOfContents = true
 
 $$\text{all-reduce} = \text{reduce-scatter} + \text{all-gather}$$
 
-```
-All-reduce 一步到位：
-  rank0: [0,1,2,3]    →    [6, 10, 14, 18]
-  rank1: [1,2,3,4]    →    [6, 10, 14, 18]
-  rank2: [2,3,4,5]    →    [6, 10, 14, 18]
-  rank3: [3,4,5,6]    →    [6, 10, 14, 18]
-
-等价于 reduce-scatter + all-gather：
-  Reduce-scatter:     rank0=[6], rank1=[10], rank2=[14], rank3=[18]
-  All-gather:         所有人=[6,10,14,18]
-```
+![All-Reduce = Reduce-Scatter + All-Gather](all-reduce-equivalence.svg)
 
 带宽效率上两者等价，但拆成两步给了 FSDP/ZeRO 灵活性的空间。
 
@@ -155,18 +145,7 @@ for step in range(num_steps):
 
 **数据流（ZeRO-3 / FSDP）**：
 
-```
-Forward:
-  all-gather params → 拼出完整参数（临时）→ 前向计算 → 释放完整参数
-
-Backward:
-  反向计算 → 每卡算出完整梯度
-  reduce-scatter grads → 每卡只保留自己的梯度 shard
-
-Optimizer:
-  每卡只对自己的参数 shard 做 optimizer.step()
-  每卡只存自己的优化器状态
-```
+![FSDP (ZeRO-3) 三阶段数据流](fsdp-dataflow.svg)
 
 **核心操作对**：`all-gather`（forward 拼参数）+ `reduce-scatter`（backward 收梯度）。代价：每个 layer 都要做 all-gather 和 reduce-scatter，有同步 barrier，比 DDP 更多通信量和同步点。这就是开头强调 `all-reduce = reduce-scatter + all-gather` 的原因——DDP 用 all-reduce 一步完成，FSDP 拆成两步，换来了内存线性扩展。
 
@@ -254,24 +233,11 @@ $$\text{memory after TP} = \frac{SBH \times 34}{T} + \frac{5AS^2B}{H}_{\text{被
 
 ### 实践法则（Rule of Thumb）
 
-```
-第一步：让模型放进内存（硬约束）
-  → Tensor Parallelism：先铺满单节点内 GPU（通常 TP=8），利用 NVLink 的高带宽
-  → FSDP (ZeRO-3) 或 Pipeline Parallelism：跨节点扩展直到模型能装下
-
-第二步：用剩余的 GPU 做 Data Parallelism 放大吞吐
-  → DP 带宽要求低，最灵活
-
-第三步（可选）：如果 batch size 太小
-  → Gradient Accumulation：多步再同步一次梯度，等价于增大有效 batch size
-```
+![并行策略选择顺序：从硬约束到吞吐优化](parallelism-decision-order.svg)
 
 带宽从高到低的并行策略层：
 
-```
-TP (NVLink)  →  CP (NVLink)  →  PP (IB)  →  DP (IB/Ethernet)
-高带宽需求 ←─────────────────────────────→ 低带宽容忍
-```
+![四种并行方式的带宽需求谱系](bandwidth-requirement-spectrum.svg)
 
 ### 真实案例
 

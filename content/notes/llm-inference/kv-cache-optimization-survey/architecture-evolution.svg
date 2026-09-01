@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 740 320" width="740" height="320">
+  <!-- 背景 -->
+  <rect width="740" height="320" fill="#ffffff"/>
+
+  <defs>
+    <marker id="evo-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#495057" />
+    </marker>
+  </defs>
+
+  <!-- 标题 -->
+  <text x="370" y="28" text-anchor="middle" font-size="17" font-weight="600" fill="#212529">
+    KV Cache 架构演进：三条技术路线
+  </text>
+
+  <!-- 第一条路线：减少 KV heads -->
+  <g transform="translate(30, 50)">
+    <rect width="680" height="74" rx="8" fill="#e7f5ff" stroke="#74c0fc" stroke-width="2"/>
+    <text x="14" y="20" font-size="13" font-weight="600" fill="#1864ab">路线 1：减少 KV heads 数量</text>
+
+    <g transform="translate(14, 28)">
+      <rect width="88" height="36" rx="5" fill="#ffffff" stroke="#a5d8ff" stroke-width="1.3"/>
+      <text x="44" y="15" text-anchor="middle" font-size="11" font-weight="600" fill="#1971c2">MHA</text>
+      <text x="44" y="28" text-anchor="middle" font-size="9" fill="#868e96">H_kv = H_q</text>
+    </g>
+    <line x1="110" y1="46" x2="128" y2="46" stroke="#495057" stroke-width="1.5" marker-end="url(#evo-arrow)"/>
+
+    <g transform="translate(132, 28)">
+      <rect width="88" height="36" rx="5" fill="#ffffff" stroke="#a5d8ff" stroke-width="1.3"/>
+      <text x="44" y="15" text-anchor="middle" font-size="11" font-weight="600" fill="#1971c2">MQA</text>
+      <text x="44" y="28" text-anchor="middle" font-size="9" fill="#868e96">H_kv = 1</text>
+    </g>
+    <line x1="228" y1="46" x2="246" y2="46" stroke="#495057" stroke-width="1.5" marker-end="url(#evo-arrow)"/>
+
+    <g transform="translate(250, 28)">
+      <rect width="88" height="36" rx="5" fill="#d0ebff" stroke="#74c0fc" stroke-width="1.5"/>
+      <text x="44" y="15" text-anchor="middle" font-size="11" font-weight="600" fill="#1864ab">GQA</text>
+      <text x="44" y="28" text-anchor="middle" font-size="9" fill="#495057">1 &lt; H_kv &lt; H_q</text>
+    </g>
+
+    <text x="360" y="60" font-size="10" fill="#868e96">质量与显存的平衡点</text>
+  </g>
+
+  <!-- 第二条路线：压缩表示维度 -->
+  <g transform="translate(30, 138)">
+    <rect width="680" height="74" rx="8" fill="#fff4e6" stroke="#ffc078" stroke-width="2"/>
+    <text x="14" y="20" font-size="13" font-weight="600" fill="#d9480f">路线 2：压缩 cached state 维度</text>
+
+    <g transform="translate(14, 28)">
+      <rect width="104" height="36" rx="5" fill="#ffffff" stroke="#ffd8a8" stroke-width="1.3"/>
+      <text x="52" y="15" text-anchor="middle" font-size="11" font-weight="600" fill="#e8590c">GQA</text>
+      <text x="52" y="28" text-anchor="middle" font-size="9" fill="#868e96">完整 K/V</text>
+    </g>
+    <line x1="126" y1="46" x2="144" y2="46" stroke="#495057" stroke-width="1.5" marker-end="url(#evo-arrow)"/>
+
+    <g transform="translate(148, 28)">
+      <rect width="104" height="36" rx="5" fill="#ffe8cc" stroke="#ffc078" stroke-width="1.5"/>
+      <text x="52" y="15" text-anchor="middle" font-size="11" font-weight="600" fill="#d9480f">MLA</text>
+      <text x="52" y="28" text-anchor="middle" font-size="9" fill="#495057">latent state</text>
+    </g>
+    <line x1="260" y1="46" x2="278" y2="46" stroke="#495057" stroke-width="1.5" marker-end="url(#evo-arrow)"/>
+
+    <g transform="translate(282, 28)">
+      <rect width="114" height="36" rx="5" fill="#ffffff" stroke="#ffd8a8" stroke-width="1.3"/>
+      <text x="57" y="15" text-anchor="middle" font-size="11" font-weight="600" fill="#e8590c">TransMLA</text>
+      <text x="57" y="28" text-anchor="middle" font-size="9" fill="#868e96">GQA→MLA 泛化</text>
+    </g>
+
+    <text x="420" y="60" font-size="10" fill="#868e96">架构层降维，需训练支持</text>
+  </g>
+
+  <!-- 第三条路线：压缩 token 轴 -->
+  <g transform="translate(30, 226)">
+    <rect width="680" height="74" rx="8" fill="#e6fcf5" stroke="#63e6be" stroke-width="2"/>
+    <text x="14" y="20" font-size="13" font-weight="600" fill="#087f5b">路线 3：压缩 token 轴（有效 T）</text>
+
+    <g transform="translate(14, 28)">
+      <rect width="104" height="36" rx="5" fill="#ffffff" stroke="#96f2d7" stroke-width="1.3"/>
+      <text x="52" y="15" text-anchor="middle" font-size="11" font-weight="600" fill="#099268">完整序列</text>
+      <text x="52" y="28" text-anchor="middle" font-size="9" fill="#868e96">每 token 存</text>
+    </g>
+    <line x1="126" y1="46" x2="144" y2="46" stroke="#495057" stroke-width="1.5" marker-end="url(#evo-arrow)"/>
+
+    <g transform="translate(148, 28)">
+      <rect width="94" height="36" rx="5" fill="#c3fae8" stroke="#63e6be" stroke-width="1.5"/>
+      <text x="47" y="15" text-anchor="middle" font-size="11" font-weight="600" fill="#087f5b">Top-k</text>
+      <text x="47" y="28" text-anchor="middle" font-size="9" fill="#495057">稀疏选择</text>
+    </g>
+    <line x1="250" y1="46" x2="268" y2="46" stroke="#495057" stroke-width="1.5" marker-end="url(#evo-arrow)"/>
+
+    <g transform="translate(272, 28)">
+      <rect width="88" height="36" rx="5" fill="#ffffff" stroke="#96f2d7" stroke-width="1.3"/>
+      <text x="44" y="15" text-anchor="middle" font-size="11" font-weight="600" fill="#099268">CSA</text>
+      <text x="44" y="28" text-anchor="middle" font-size="9" fill="#868e96">跨层共享</text>
+    </g>
+    <line x1="368" y1="46" x2="386" y2="46" stroke="#495057" stroke-width="1.5" marker-end="url(#evo-arrow)"/>
+
+    <g transform="translate(390, 28)">
+      <rect width="88" height="36" rx="5" fill="#ffffff" stroke="#96f2d7" stroke-width="1.3"/>
+      <text x="44" y="15" text-anchor="middle" font-size="11" font-weight="600" fill="#099268">HCA</text>
+      <text x="44" y="28" text-anchor="middle" font-size="9" fill="#868e96">层次聚合</text>
+    </g>
+    <line x1="486" y1="46" x2="504" y2="46" stroke="#495057" stroke-width="1.5" marker-end="url(#evo-arrow)"/>
+
+    <g transform="translate(508, 28)">
+      <rect width="98" height="36" rx="5" fill="#ffffff" stroke="#96f2d7" stroke-width="1.3"/>
+      <text x="49" y="15" text-anchor="middle" font-size="11" font-weight="600" fill="#099268">MLRA/GDN</text>
+      <text x="49" y="28" text-anchor="middle" font-size="9" fill="#868e96">固定状态</text>
+    </g>
+  </g>
+
+  <!-- 底部总结 -->
+  <text x="370" y="316" text-anchor="middle" font-size="10.5" fill="#495057">
+    核心思路：从 2 × L × T × H<tspan font-size="8" dy="2">kv</tspan><tspan dy="-2"> × D</tspan><tspan font-size="8" dy="2">h</tspan><tspan dy="-2"> 公式出发，分别攻击 H</tspan><tspan font-size="8" dy="2">kv</tspan><tspan dy="-2">、缓存维度、有效 T</tspan>
+  </text>
+</svg>

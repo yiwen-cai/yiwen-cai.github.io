@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 250" width="720" height="250">
+  <!-- 背景 -->
+  <rect width="720" height="250" fill="#ffffff"/>
+
+  <defs>
+    <linearGradient id="bw-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ffc9c9;stop-opacity:1" />
+      <stop offset="33%" style="stop-color:#ffd8a8;stop-opacity:1" />
+      <stop offset="66%" style="stop-color:#a5d8ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#b2f2bb;stop-opacity:1" />
+    </linearGradient>
+    <marker id="bw-left" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 10 0 L 0 5 L 10 10 z" fill="#868e96" />
+    </marker>
+    <marker id="bw-right" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#868e96" />
+    </marker>
+  </defs>
+
+  <!-- 标题 -->
+  <text x="360" y="28" text-anchor="middle" font-size="17" font-weight="600" fill="#212529">
+    四种并行方式的带宽需求谱系
+  </text>
+
+  <!-- 渐变条 -->
+  <rect x="40" y="52" width="640" height="14" rx="7" fill="url(#bw-grad)"/>
+
+  <!-- 四个并行方式卡片 -->
+  <g transform="translate(40, 78)">
+    <rect width="148" height="82" rx="8" fill="#fff5f5" stroke="#ffa8a8" stroke-width="2"/>
+    <text x="74" y="22" text-anchor="middle" font-size="14" font-weight="600" fill="#c92a2a">TP</text>
+    <text x="74" y="39" text-anchor="middle" font-size="10.5" fill="#495057">Tensor Parallelism</text>
+    <text x="74" y="56" text-anchor="middle" font-size="10" font-weight="600" fill="#c92a2a">NVLink</text>
+    <text x="74" y="71" text-anchor="middle" font-size="9.5" fill="#868e96">每层多次通信</text>
+  </g>
+
+  <g transform="translate(204, 78)">
+    <rect width="148" height="82" rx="8" fill="#fff4e6" stroke="#ffc078" stroke-width="2"/>
+    <text x="74" y="22" text-anchor="middle" font-size="14" font-weight="600" fill="#d9480f">CP</text>
+    <text x="74" y="39" text-anchor="middle" font-size="10.5" fill="#495057">Context Parallelism</text>
+    <text x="74" y="56" text-anchor="middle" font-size="10" font-weight="600" fill="#d9480f">NVLink</text>
+    <text x="74" y="71" text-anchor="middle" font-size="9.5" fill="#868e96">attention 跨卡交换 KV</text>
+  </g>
+
+  <g transform="translate(368, 78)">
+    <rect width="148" height="82" rx="8" fill="#e7f5ff" stroke="#74c0fc" stroke-width="2"/>
+    <text x="74" y="22" text-anchor="middle" font-size="14" font-weight="600" fill="#1864ab">PP</text>
+    <text x="74" y="39" text-anchor="middle" font-size="10.5" fill="#495057">Pipeline Parallelism</text>
+    <text x="74" y="56" text-anchor="middle" font-size="10" font-weight="600" fill="#1864ab">InfiniBand</text>
+    <text x="74" y="71" text-anchor="middle" font-size="9.5" fill="#868e96">只传层边界激活值</text>
+  </g>
+
+  <g transform="translate(532, 78)">
+    <rect width="148" height="82" rx="8" fill="#e6fcf5" stroke="#63e6be" stroke-width="2"/>
+    <text x="74" y="22" text-anchor="middle" font-size="14" font-weight="600" fill="#087f5b">DP</text>
+    <text x="74" y="39" text-anchor="middle" font-size="10.5" fill="#495057">Data Parallelism</text>
+    <text x="74" y="56" text-anchor="middle" font-size="10" font-weight="600" fill="#087f5b">IB / Ethernet</text>
+    <text x="74" y="71" text-anchor="middle" font-size="9.5" fill="#868e96">每步同步一次梯度</text>
+  </g>
+
+  <!-- 双向箭头标注 -->
+  <line x1="60" y1="182" x2="660" y2="182" stroke="#868e96" stroke-width="1.8"
+        marker-start="url(#bw-left)" marker-end="url(#bw-right)"/>
+  <text x="110" y="202" text-anchor="middle" font-size="11.5" font-weight="600" fill="#c92a2a">高带宽需求</text>
+  <text x="610" y="202" text-anchor="middle" font-size="11.5" font-weight="600" fill="#087f5b">低带宽容忍</text>
+
+  <!-- 底部说明 -->
+  <g transform="translate(90, 214)">
+    <rect width="540" height="28" rx="6" fill="#f8f9fa" stroke="#ced4da" stroke-width="1.2"/>
+    <text x="270" y="18" text-anchor="middle" font-size="10.5" fill="#495057">
+      拓扑映射原则：带宽需求越高的并行方式，越要放在物理距离越近的设备之间
+    </text>
+  </g>
+</svg>

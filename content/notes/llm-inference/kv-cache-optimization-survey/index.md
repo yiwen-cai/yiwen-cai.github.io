@@ -48,13 +48,7 @@ LLM 推理分为 prefill 和 decode 两个阶段，它们的资源瓶颈截然�
 
 一句话：**Prefill builds the cache; Decode consumes and extends the cache.**
 
-```
-Prompt tokens
-    → Prefill（并行处理 / 构建 KV Cache / compute-bound）
-        → Decode step 1（读 cache → 生成 token 1 → 追加 KV）
-            → Decode step 2（读更新后的 cache → 生成 token 2 → 追加 KV）
-                → ...（memory-bandwidth-bound）
-```
+![自回归推理的两阶段：Prefill 与 Decode](prefill-decode-phases.svg)
 
 长上下文与长输出下，decode 阶段会不断访问越来越大的 cache，显存带宽压力非常突出。
 
@@ -101,13 +95,7 @@ Transformer 每一层都会为 token 计算 key 和 value（$K = XW_K$，$V = XW
 
 [PagedAttention](https://arxiv.org/abs/2309.06180)（vLLM, SOSP 2023）借鉴操作系统的分页思想：请求在逻辑上看到连续的 token 序列，但 KV blocks 在物理 GPU memory 中可以不连续，由一张 **block table** 做映射。
 
-```
-逻辑 KV blocks（请求视角：连续）   block table（页表）   GPU 物理块（分散）
-  block 0  ─────────────────────────→  0 → 物理 7  ────→  block 7
-  block 1  ─────────────────────────→  1 → 物理 2  ────→  block 2
-  block 2  ─────────────────────────→  2 → 物理 9  ────→  block 9
-  block 3  ─────────────────────────→  3 → 物理 4  ────→  block 4
-```
+![PagedAttention：逻辑连续、物理分散](paged-attention-mapping.svg)
 
 它解决的是：连续显存分配的碎片、输出长度未知导致的预分配浪费、decode 动态增长，从而支撑更大的有效 batch size 和 continuous batching。
 
@@ -259,11 +247,7 @@ token-level pruning 的反例：可能保住了关键词，却丢了条件/否�
 
 回到公式 $\text{KV Cache Size} = 2 \times L \times T \times H_{kv} \times D_h \times \text{bytes}$，架构协同抓三个量：$H_{kv}$（减少 KV heads）、cached state dimension（latent 压维度）、有效 $T$（token-axis compressed KV）。
 
-```
-MHA (H_kv=H_q) → MQA (H_kv=1) → GQA (1<H_kv<H_q) → MLA (latent state)
-  → TransMLA (GQA→MLA 泛化) → Sparse/Compressed (Top-k / CSA / HCA)
-  → MLRA / GDN (低秩可切分 / 固定状态)
-```
+![KV Cache 架构演进：三条技术路线](architecture-evolution.svg)
 
 ### MHA → MQA → GQA：减少 KV heads
 
@@ -281,15 +265,7 @@ MQA 保留多个 query heads，共享一组 K/V；GQA 在 MQA 的极端共享和
 
 [MLA](https://arxiv.org/abs/2405.04434)（DeepSeek-V2）把 KV Cache 优化前移到架构层：缓存的是低维 latent state，而不是完整 K/V。
 
-```
-Hidden state
-   │ down projection
-   ▼
-低维 latent state  ← 缓存这个（而非完整 K/V）
-   │ attention 时 up projection
-   ▼
-还原出 K/V 用于 attention
-```
+![MLA：缓存 Latent State 而非完整 K/V](mla-latent-compression.svg)
 
 从架构层减少 KV Cache，不需要 token eviction；但需要训练阶段支持，不是任意模型即插即用。
 

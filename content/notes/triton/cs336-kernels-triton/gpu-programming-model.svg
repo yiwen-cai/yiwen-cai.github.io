@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 340" width="620" height="340">
+  <!-- 背景 -->
+  <rect width="620" height="340" fill="#ffffff"/>
+
+  <defs>
+    <linearGradient id="kernel-g" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f3f0ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e5dbff;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="grid-g" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#e7f5ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d0ebff;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="block-g" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#fff4e6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ffe8cc;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- 标题 -->
+  <text x="310" y="28" text-anchor="middle" font-size="17" font-weight="600" fill="#212529">
+    GPU 编程模型的层次结构
+  </text>
+
+  <!-- 最外层: GPU kernel -->
+  <rect x="25" y="48" width="570" height="240" rx="12" fill="url(#kernel-g)" stroke="#9775fa" stroke-width="2.5"/>
+  <text x="42" y="72" font-size="15" font-weight="600" fill="#5f3dc4">GPU Kernel</text>
+  <text x="140" y="72" font-size="11" fill="#868e96">一次 launch 启动的完整计算任务</text>
+
+  <!-- 第二层: Grid -->
+  <rect x="45" y="85" width="530" height="190" rx="10" fill="url(#grid-g)" stroke="#4dabf7" stroke-width="2"/>
+  <text x="60" y="108" font-size="14" font-weight="600" fill="#1864ab">Grid</text>
+  <text x="115" y="108" font-size="11" fill="#868e96">所有 thread block 的集合</text>
+
+  <!-- 第三层: 多个 Thread block -->
+  <!-- Block 0 (展开) -->
+  <rect x="65" y="120" width="270" height="140" rx="9" fill="url(#block-g)" stroke="#ff922b" stroke-width="2"/>
+  <text x="78" y="142" font-size="13" font-weight="600" fill="#d9480f">Thread Block 0 / CTA</text>
+  <text x="78" y="159" font-size="10.5" fill="#868e96">块内 threads 共享 shared memory</text>
+
+  <!-- Block 内的 threads -->
+  <g transform="translate(78, 168)">
+    <rect width="52" height="34" rx="5" fill="#ffffff" stroke="#ced4da" stroke-width="1.2"/>
+    <text x="26" y="15" text-anchor="middle" font-size="10" font-weight="600" fill="#495057">Thread</text>
+    <text x="26" y="27" text-anchor="middle" font-size="9" fill="#868e96">0</text>
+  </g>
+  <g transform="translate(136, 168)">
+    <rect width="52" height="34" rx="5" fill="#ffffff" stroke="#ced4da" stroke-width="1.2"/>
+    <text x="26" y="15" text-anchor="middle" font-size="10" font-weight="600" fill="#495057">Thread</text>
+    <text x="26" y="27" text-anchor="middle" font-size="9" fill="#868e96">1</text>
+  </g>
+  <g transform="translate(194, 168)">
+    <rect width="52" height="34" rx="5" fill="#ffffff" stroke="#ced4da" stroke-width="1.2"/>
+    <text x="26" y="15" text-anchor="middle" font-size="10" font-weight="600" fill="#495057">Thread</text>
+    <text x="26" y="27" text-anchor="middle" font-size="9" fill="#868e96">2</text>
+  </g>
+  <text x="278" y="190" font-size="14" fill="#868e96">···</text>
+
+  <!-- shared memory 条 -->
+  <rect x="78" y="212" width="220" height="24" rx="5" fill="#fff9db" stroke="#ffd43b" stroke-width="1.5"/>
+  <text x="188" y="228" text-anchor="middle" font-size="10.5" fill="#e67700">Shared Memory（块内可见）</text>
+
+  <text x="78" y="252" font-size="10" fill="#868e96">每个 Thread 私有 register</text>
+
+  <!-- Block 1 (折叠) -->
+  <rect x="350" y="120" width="205" height="62" rx="9" fill="url(#block-g)" stroke="#ff922b" stroke-width="2"/>
+  <text x="363" y="142" font-size="13" font-weight="600" fill="#d9480f">Thread Block 1</text>
+  <text x="363" y="160" font-size="10.5" fill="#868e96">⋮ 相同内部结构</text>
+
+  <!-- Block N (折叠) -->
+  <rect x="350" y="196" width="205" height="64" rx="9" fill="url(#block-g)" stroke="#ff922b" stroke-width="2"/>
+  <text x="363" y="218" font-size="13" font-weight="600" fill="#d9480f">Thread Block N</text>
+  <text x="363" y="236" font-size="10.5" fill="#868e96">⋮ 由 SM 独立调度</text>
+
+  <!-- 底部对比说明 -->
+  <g transform="translate(60, 296)">
+    <rect width="500" height="34" rx="7" fill="#f8f9fa" stroke="#ced4da" stroke-width="1.3"/>
+    <text x="14" y="21" font-size="11.5" fill="#495057">
+      <tspan font-weight="600" fill="#1864ab">CUDA</tspan> 指定每个 thread 做什么　·　<tspan font-weight="600" fill="#d9480f">Triton</tspan> 指定每个 thread block 做什么
+    </text>
+  </g>
+</svg>

@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 740 300" width="740" height="300">
+  <!-- 背景 -->
+  <rect width="740" height="300" fill="#ffffff"/>
+
+  <defs>
+    <marker id="rl-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#495057" />
+    </marker>
+    <marker id="rl-loop" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#7950f2" />
+    </marker>
+  </defs>
+
+  <!-- 标题 -->
+  <text x="370" y="26" text-anchor="middle" font-size="17" font-weight="600" fill="#212529">
+    RLHF / RLVR 训练环：奖励只提供信号，优势驱动更新
+  </text>
+
+  <!-- 步骤 1: prompt -->
+  <g transform="translate(24, 56)">
+    <rect width="104" height="62" rx="8" fill="#f1f3f5" stroke="#adb5bd" stroke-width="1.8"/>
+    <text x="52" y="24" text-anchor="middle" font-size="11.5" font-weight="600" fill="#495057">prompt</text>
+    <text x="52" y="41" text-anchor="middle" font-size="9.5" fill="#868e96">从数据集</text>
+    <text x="52" y="54" text-anchor="middle" font-size="9.5" fill="#868e96">取一批问题</text>
+  </g>
+  <line x1="134" y1="87" x2="154" y2="87" stroke="#495057" stroke-width="1.8" marker-end="url(#rl-arrow)"/>
+
+  <!-- 步骤 2: 策略采样 -->
+  <g transform="translate(158, 56)">
+    <rect width="120" height="62" rx="8" fill="#e7f5ff" stroke="#74c0fc" stroke-width="1.8"/>
+    <text x="60" y="24" text-anchor="middle" font-size="11.5" font-weight="600" fill="#1864ab">策略 π 采样</text>
+    <text x="60" y="41" text-anchor="middle" font-size="9.5" fill="#495057">生成一个或一组</text>
+    <text x="60" y="54" text-anchor="middle" font-size="9.5" fill="#495057">候选回复</text>
+  </g>
+  <line x1="284" y1="87" x2="304" y2="87" stroke="#495057" stroke-width="1.8" marker-end="url(#rl-arrow)"/>
+
+  <!-- 步骤 3: RM / 规则打分 -->
+  <g transform="translate(308, 56)">
+    <rect width="124" height="62" rx="8" fill="#fff4e6" stroke="#ffc078" stroke-width="1.8"/>
+    <text x="62" y="22" text-anchor="middle" font-size="11.5" font-weight="600" fill="#d9480f">RM / 规则打分</text>
+    <text x="62" y="38" text-anchor="middle" font-size="9.5" fill="#495057">产出标量或过程</text>
+    <text x="62" y="51" text-anchor="middle" font-size="9.5" fill="#495057">奖励 r</text>
+  </g>
+  <line x1="438" y1="87" x2="458" y2="87" stroke="#495057" stroke-width="1.8" marker-end="url(#rl-arrow)"/>
+
+  <!-- 步骤 4: 计算优势 -->
+  <g transform="translate(462, 44)">
+    <rect width="140" height="86" rx="8" fill="#e6fcf5" stroke="#63e6be" stroke-width="1.8"/>
+    <text x="70" y="22" text-anchor="middle" font-size="11.5" font-weight="600" fill="#087f5b">计算优势 Â</text>
+    
+    <g transform="translate(10, 30)">
+      <rect width="120" height="22" rx="4" fill="#ffffff" stroke="#96f2d7" stroke-width="1"/>
+      <text x="60" y="15" text-anchor="middle" font-size="9" fill="#099268">PPO：critic 估基线</text>
+    </g>
+    <g transform="translate(10, 56)">
+      <rect width="120" height="22" rx="4" fill="#ffffff" stroke="#96f2d7" stroke-width="1"/>
+      <text x="60" y="15" text-anchor="middle" font-size="9" fill="#099268">GRPO：组内相对</text>
+    </g>
+  </g>
+  <line x1="608" y1="87" x2="628" y2="87" stroke="#495057" stroke-width="1.8" marker-end="url(#rl-arrow)"/>
+
+  <!-- 步骤 5: clip 目标更新 -->
+  <g transform="translate(632, 56)">
+    <rect width="86" height="62" rx="8" fill="#f3f0ff" stroke="#b197fc" stroke-width="1.8"/>
+    <text x="43" y="22" text-anchor="middle" font-size="11.5" font-weight="600" fill="#5f3dc4">clip 目标</text>
+    <text x="43" y="38" text-anchor="middle" font-size="9.5" fill="#495057">更新 π</text>
+    <text x="43" y="52" text-anchor="middle" font-size="9" fill="#868e96">限制步长</text>
+  </g>
+
+  <!-- 回环箭头：更新后的 π 回到采样 -->
+  <path d="M 675 124 L 675 168 Q 675 182, 661 182 L 232 182 Q 218 182, 218 168 L 218 124"
+        fill="none" stroke="#7950f2" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#rl-loop)"/>
+  <text x="446" y="176" text-anchor="middle" font-size="10.5" fill="#5f3dc4">更新后的策略进入下一轮采样</text>
+
+  <!-- 关键说明区 -->
+  <g transform="translate(24, 198)">
+    <rect width="694" height="52" rx="8" fill="#fff9db" stroke="#ffe066" stroke-width="1.5"/>
+    <text x="14" y="20" font-size="10.5" fill="#495057">
+      <tspan font-weight="600" fill="#e67700">关键区分：</tspan>奖励模型只负责产出 r，本身不直接对策略做监督梯度更新
+    </text>
+    <text x="14" y="38" font-size="10.5" fill="#495057">
+      真正驱动 π 更新的是优势 Â 与 PPO/GRPO 的 clip 目标 —— r 经过基线扣除后才变成可用的学习信号
+    </text>
+  </g>
+
+  <!-- DPO 旁路说明 -->
+  <g transform="translate(24, 260)">
+    <rect width="694" height="30" rx="7" fill="#f8f9fa" stroke="#ced4da" stroke-width="1.2"/>
+    <text x="14" y="19" font-size="10.5" fill="#868e96">
+      <tspan font-weight="600" fill="#495057">DPO 路径：</tspan>直接在偏好数据上优化，绕开显式 RM 与整个 RL 训练环
+    </text>
+  </g>
+</svg>

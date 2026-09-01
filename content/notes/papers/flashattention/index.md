@@ -18,11 +18,7 @@ FlashAttention 通过 **IO-aware 的 tiling 和重计算**，在不改变 attent
 
 标准 attention 的内存瓶颈：
 
-```
-S = Q·K^T          # 读写 N×N 矩阵到 HBM
-P = softmax(S)     # 读写 N×N 矩阵到 HBM
-O = P·V            # 读写 N×N 矩阵到 HBM
-```
+![标准 Attention 的 HBM 往返瓶颈](standard-attention-hbm-traffic.svg)
 
 对于序列长度 N，需要 O(N²) 的 HBM 读写。GPU 计算速度 >> HBM 带宽，导致 memory-bound。
 

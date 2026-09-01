@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 380" width="700" height="380">
+  <!-- 背景 -->
+  <rect width="700" height="380" fill="#ffffff"/>
+
+  <defs>
+    <marker id="fa-read" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1971c2" />
+    </marker>
+    <marker id="fa-write" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#c92a2a" />
+    </marker>
+  </defs>
+
+  <!-- 标题 -->
+  <text x="350" y="26" text-anchor="middle" font-size="17" font-weight="600" fill="#212529">
+    标准 Attention 的 HBM 往返瓶颈
+  </text>
+  <text x="350" y="45" text-anchor="middle" font-size="10.5" fill="#868e96">
+    每一步都把 N×N 中间矩阵写回显存，再读出来给下一步
+  </text>
+
+  <!-- HBM 区域（下方，大容量慢速） -->
+  <g transform="translate(30, 250)">
+    <rect width="640" height="86" rx="10" fill="#ffe3e3" stroke="#fa5252" stroke-width="2.5"/>
+    <text x="16" y="24" font-size="13" font-weight="600" fill="#c92a2a">HBM / 显存</text>
+    <text x="118" y="24" font-size="10" fill="#e03131">容量大、带宽有限 —— 真正的瓶颈</text>
+
+    <!-- 存储的矩阵 -->
+    <g transform="translate(16, 34)">
+      <rect width="96" height="38" rx="5" fill="#ffffff" stroke="#ffc9c9" stroke-width="1.3"/>
+      <text x="48" y="16" text-anchor="middle" font-size="10.5" font-weight="600" fill="#495057">Q, K, V</text>
+      <text x="48" y="30" text-anchor="middle" font-size="9" fill="#868e96">输入</text>
+    </g>
+
+    <g transform="translate(124, 34)">
+      <rect width="110" height="38" rx="5" fill="#fff5f5" stroke="#ffa8a8" stroke-width="1.6"/>
+      <text x="55" y="16" text-anchor="middle" font-size="10.5" font-weight="600" fill="#c92a2a">S (N×N)</text>
+      <text x="55" y="30" text-anchor="middle" font-size="9" fill="#e03131">中间矩阵，被迫落盘</text>
+    </g>
+
+    <g transform="translate(246, 34)">
+      <rect width="110" height="38" rx="5" fill="#fff5f5" stroke="#ffa8a8" stroke-width="1.6"/>
+      <text x="55" y="16" text-anchor="middle" font-size="10.5" font-weight="600" fill="#c92a2a">P (N×N)</text>
+      <text x="55" y="30" text-anchor="middle" font-size="9" fill="#e03131">中间矩阵，被迫落盘</text>
+    </g>
+
+    <g transform="translate(368, 34)">
+      <rect width="96" height="38" rx="5" fill="#ffffff" stroke="#ffc9c9" stroke-width="1.3"/>
+      <text x="48" y="16" text-anchor="middle" font-size="10.5" font-weight="600" fill="#495057">O</text>
+      <text x="48" y="30" text-anchor="middle" font-size="9" fill="#868e96">输出</text>
+    </g>
+
+    <!-- 显存占用提示 -->
+    <g transform="translate(478, 34)">
+      <rect width="146" height="38" rx="5" fill="#fff9db" stroke="#ffe066" stroke-width="1.3"/>
+      <text x="73" y="16" text-anchor="middle" font-size="10" font-weight="600" fill="#e67700">显存占用 O(N²)</text>
+      <text x="73" y="30" text-anchor="middle" font-size="9" fill="#868e96">长序列直接爆显存</text>
+    </g>
+  </g>
+
+  <!-- 计算单元区域（上方） -->
+  <g transform="translate(30, 62)">
+    <rect width="640" height="52" rx="10" fill="#e7f5ff" stroke="#74c0fc" stroke-width="2"/>
+    <text x="16" y="22" font-size="13" font-weight="600" fill="#1864ab">GPU 计算单元（SRAM / 片上）</text>
+    <text x="234" y="22" font-size="10" fill="#1971c2">算力远超 HBM 带宽，大部分时间在等数据</text>
+    <text x="16" y="41" font-size="10" fill="#868e96">标准实现每步只做一件事，算完立刻把结果推回 HBM，无法在片上串联</text>
+  </g>
+
+  <!-- 三个计算步骤 + 往返箭头 -->
+  <g transform="translate(48, 130)">
+    <!-- 步骤 1 -->
+    <rect width="188" height="46" rx="7" fill="#ffffff" stroke="#adb5bd" stroke-width="1.6"/>
+    <text x="94" y="19" text-anchor="middle" font-size="11" font-weight="600" font-family="monospace" fill="#212529">S = Q·Kᵀ</text>
+    <text x="94" y="35" text-anchor="middle" font-size="9.5" fill="#868e96">读 Q,K → 写 S</text>
+  </g>
+
+  <g transform="translate(256, 130)">
+    <!-- 步骤 2 -->
+    <rect width="188" height="46" rx="7" fill="#ffffff" stroke="#adb5bd" stroke-width="1.6"/>
+    <text x="94" y="19" text-anchor="middle" font-size="11" font-weight="600" font-family="monospace" fill="#212529">P = softmax(S)</text>
+    <text x="94" y="35" text-anchor="middle" font-size="9.5" fill="#868e96">读 S → 写 P</text>
+  </g>
+
+  <g transform="translate(464, 130)">
+    <!-- 步骤 3 -->
+    <rect width="188" height="46" rx="7" fill="#ffffff" stroke="#adb5bd" stroke-width="1.6"/>
+    <text x="94" y="19" text-anchor="middle" font-size="11" font-weight="600" font-family="monospace" fill="#212529">O = P·V</text>
+    <text x="94" y="35" text-anchor="middle" font-size="9.5" fill="#868e96">读 P,V → 写 O</text>
+  </g>
+
+  <!-- 往返箭头：每步都下到 HBM 再上来 -->
+  <!-- 步骤1 写 -->
+  <line x1="120" y1="178" x2="120" y2="246" stroke="#c92a2a" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#fa-write)"/>
+  <text x="128" y="200" font-size="9" fill="#c92a2a">写 S</text>
+
+  <!-- HBM 到步骤2 读 -->
+  <line x1="180" y1="246" x2="180" y2="180" stroke="#1971c2" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#fa-read)"/>
+  <text x="188" y="222" font-size="9" fill="#1971c2">读 S</text>
+
+  <!-- 步骤2 写 -->
+  <line x1="330" y1="178" x2="330" y2="246" stroke="#c92a2a" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#fa-write)"/>
+  <text x="338" y="200" font-size="9" fill="#c92a2a">写 P</text>
+
+  <!-- HBM 到步骤3 读 -->
+  <line x1="392" y1="246" x2="392" y2="180" stroke="#1971c2" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#fa-read)"/>
+  <text x="400" y="222" font-size="9" fill="#1971c2">读 P</text>
+
+  <!-- 步骤3 写 -->
+  <line x1="558" y1="178" x2="558" y2="246" stroke="#c92a2a" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#fa-write)"/>
+  <text x="566" y="200" font-size="9" fill="#c92a2a">写 O</text>
+
+  <!-- 步骤间流向箭头 -->
+  <line x1="240" y1="153" x2="252" y2="153" stroke="#adb5bd" stroke-width="1.5"/>
+  <line x1="448" y1="153" x2="460" y2="153" stroke="#adb5bd" stroke-width="1.5"/>
+
+  <!-- 底部结论 -->
+  <g transform="translate(90, 348)">
+    <rect width="520" height="26" rx="6" fill="#f8f9fa" stroke="#ced4da" stroke-width="1.2"/>
+    <text x="260" y="17" text-anchor="middle" font-size="10.5" fill="#495057">
+      HBM 读写量 O(N²)，算力空转 —— FlashAttention 的出发点就是消掉这些往返
+    </text>
+  </g>
+</svg>

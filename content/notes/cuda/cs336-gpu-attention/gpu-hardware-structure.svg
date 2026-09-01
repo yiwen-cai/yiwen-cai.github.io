@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 380" width="600" height="380">
+  <!-- 背景 -->
+  <rect width="600" height="380" fill="#ffffff"/>
+  
+  <defs>
+    <linearGradient id="gpu-card" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#e7f5ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d0ebff;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="sm-card" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#fff4e6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ffe8cc;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="comp-card" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f8f9fa;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e9ecef;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- 标题 -->
+  <text x="300" y="30" text-anchor="middle" font-size="17" font-weight="600" fill="#212529">
+    GPU 硬件结构：从芯片到计算单元
+  </text>
+
+  <!-- GPU 顶层卡片 -->
+  <rect x="30" y="55" width="540" height="310" rx="12" fill="url(#gpu-card)" stroke="#74c0fc" stroke-width="2.5"/>
+  <text x="45" y="82" font-size="15" font-weight="600" fill="#1864ab">GPU（图形处理单元）</text>
+
+  <!-- 多个 SM 示意 -->
+  <text x="45" y="108" font-size="13" fill="#495057">包含多个独立的 Streaming Multiprocessor (SM)</text>
+  
+  <!-- SM 1 -->
+  <g transform="translate(50, 125)">
+    <rect width="240" height="215" rx="10" fill="url(#sm-card)" stroke="#ffc078" stroke-width="2"/>
+    <text x="12" y="25" font-size="14" font-weight="600" fill="#d9480f">SM 1</text>
+    
+    <!-- 组件卡片 -->
+    <g transform="translate(12, 40)">
+      <rect width="216" height="28" rx="6" fill="url(#comp-card)" stroke="#ced4da" stroke-width="1"/>
+      <text x="10" y="18" font-size="12" fill="#495057">CUDA Cores / SPs（标量处理器）</text>
+    </g>
+    
+    <g transform="translate(12, 75)">
+      <rect width="216" height="28" rx="6" fill="url(#comp-card)" stroke="#ced4da" stroke-width="1"/>
+      <text x="10" y="18" font-size="12" fill="#495057">Tensor Cores（矩阵加速单元）</text>
+    </g>
+    
+    <g transform="translate(12, 110)">
+      <rect width="216" height="28" rx="6" fill="url(#comp-card)" stroke="#ced4da" stroke-width="1"/>
+      <text x="10" y="18" font-size="12" fill="#495057">Registers（寄存器堆）</text>
+    </g>
+    
+    <g transform="translate(12, 145)">
+      <rect width="216" height="28" rx="6" fill="url(#comp-card)" stroke="#ced4da" stroke-width="1"/>
+      <text x="10" y="18" font-size="12" fill="#495057">Shared Memory / L1 Cache</text>
+    </g>
+    
+    <g transform="translate(12, 180)">
+      <rect width="216" height="28" rx="6" fill="url(#comp-card)" stroke="#ced4da" stroke-width="1"/>
+      <text x="10" y="18" font-size="12" fill="#495057">Warp Schedulers（调度器）</text>
+    </g>
+  </g>
+
+  <!-- SM 2 (简化示意) -->
+  <g transform="translate(310, 125)">
+    <rect width="240" height="80" rx="10" fill="url(#sm-card)" stroke="#ffc078" stroke-width="2"/>
+    <text x="12" y="25" font-size="14" font-weight="600" fill="#d9480f">SM 2</text>
+    <text x="12" y="48" font-size="11" fill="#868e96">⋮（包含相同组件）</text>
+  </g>
+
+  <!-- SM N (简化示意) -->
+  <g transform="translate(310, 220)">
+    <rect width="240" height="80" rx="10" fill="url(#sm-card)" stroke="#ffc078" stroke-width="2"/>
+    <text x="12" y="25" font-size="14" font-weight="600" fill="#d9480f">SM N</text>
+    <text x="12" y="48" font-size="11" fill="#868e96">⋮（并行执行不同线程块）</text>
+  </g>
+
+  <!-- 底部说明 -->
+  <text x="300" y="370" text-anchor="middle" font-size="11" fill="#868e96">
+    每个 SM 可独立调度线程束（warp），所有 SM 共享 L2 缓存和全局内存（HBM）
+  </text>
+</svg>

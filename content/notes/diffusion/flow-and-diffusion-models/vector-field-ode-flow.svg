@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 740 420" width="740" height="420">
+  <!-- 背景 -->
+  <rect width="740" height="420" fill="#ffffff"/>
+  <defs>
+    <!-- 渐变定义 -->
+    <linearGradient id="card-grad-1" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f8f9fa;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e9ecef;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="card-grad-2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#e7f5ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d0ebff;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="card-grad-3" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#fff4e6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ffe8cc;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- 箭头标记 -->
+    <marker id="arrow-main" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#495057" />
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1971c2" />
+    </marker>
+    <marker id="arrow-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d9480f" />
+    </marker>
+  </defs>
+
+  <!-- 标题 -->
+  <text x="370" y="30" text-anchor="middle" font-size="18" font-weight="600" fill="#212529">
+    向量场、ODE 初值问题与 Flow 的概念层次
+  </text>
+
+  <!-- 第一层：向量场 u_t(x) -->
+  <g transform="translate(40, 60)">
+    <rect width="660" height="95" rx="12" fill="url(#card-grad-1)" stroke="#dee2e6" stroke-width="2"/>
+    
+    <text x="20" y="30" font-size="16" font-weight="600" fill="#212529">① 向量场（局部速度规则）</text>
+    <text x="30" y="52" font-size="14" fill="#495057">
+      时空依赖函数：<tspan font-family="monospace" font-weight="600" fill="#1971c2">u_t(x)</tspan>
+    </text>
+    <text x="30" y="72" font-size="13" fill="#868e96">
+      给定 (t, x)，输出 d 维速度向量 — 描述「此刻、此地，粒子应该以多快、往哪个方向移动」
+    </text>
+  </g>
+
+  <path d="M 370 160 L 370 182" stroke="#495057" stroke-width="2" marker-end="url(#arrow-main)"/>
+  <text x="385" y="175" font-size="13" fill="#868e96">作为动力学规则</text>
+
+  <!-- 第二层：ODE 初值问题 -->
+  <g transform="translate(40, 185)">
+    <rect width="660" height="110" rx="12" fill="url(#card-grad-2)" stroke="#74c0fc" stroke-width="2"/>
+    
+    <text x="20" y="30" font-size="16" font-weight="600" fill="#1864ab">② ODE 初值问题（单点积分方程）</text>
+    <text x="30" y="55" font-size="14" fill="#1971c2">
+      <tspan font-family="monospace" font-weight="600">dX_t / dt = u_t(X_t)</tspan>，初值 
+      <tspan font-family="monospace">X_0 = x_0</tspan>
+    </text>
+    
+    <rect x="30" y="65" width="600" height="32" rx="6" fill="#e7f5ff" stroke="#a5d8ff" stroke-width="1"/>
+    <text x="40" y="85" font-size="13" fill="#1864ab">
+      ✦ 描述：<tspan font-weight="600">单个初始点</tspan> x_0 如何在向量场驱动下「逐时刻移动」，解出轨迹 
+      <tspan font-family="monospace">t ↦ X_t</tspan>
+    </text>
+  </g>
+
+  <path d="M 370 300 L 370 322" stroke="#495057" stroke-width="2" marker-end="url(#arrow-main)"/>
+  <text x="385" y="315" font-size="13" fill="#868e96">全空间初值扫描</text>
+
+  <!-- 第三层：Flow Map ψ_t -->
+  <g transform="translate(40, 325)">
+    <rect width="660" height="82" rx="12" fill="url(#card-grad-3)" stroke="#ffc078" stroke-width="2"/>
+    
+    <text x="20" y="28" font-size="16" font-weight="600" fill="#d9480f">③ Flow Map（全空间映射）</text>
+    <text x="30" y="50" font-size="14" fill="#d9480f">
+      <tspan font-family="monospace" font-weight="600">ψ_t : ℝ^d → ℝ^d</tspan>，定义为 
+      <tspan font-family="monospace">x_0 ↦ ψ_t(x_0)</tspan>
+    </text>
+    <text x="30" y="68" font-size="13" fill="#862e9c">
+      将<tspan font-weight="600">所有初始点</tspan>同时推进到 t 时刻 → 描述「整个空间如何被向量场整体输运变形」
+    </text>
+  </g>
+
+  <!-- 底部关系说明 -->
+  <g transform="translate(60, 425)">
+    <rect width="620" height="65" rx="8" fill="#f8f9fa" stroke="#ced4da" stroke-width="1"/>
+    
+    <text x="15" y="22" font-size="13" font-weight="600" fill="#495057">
+      核心关系链：
+    </text>
+    <text x="25" y="40" font-size="12" fill="#495057">
+      • <tspan fill="#1971c2" font-weight="600">u_t(x)</tspan> 定义局部规则 
+      → <tspan fill="#1864ab" font-weight="600">ODE</tspan> 求解单点轨迹 
+      → <tspan fill="#d9480f" font-weight="600">ψ_t</tspan> 汇总为全局映射
+    </text>
+    <text x="25" y="56" font-size="12" fill="#868e96">
+      • 采样/生成算法实现时，只需数值积分 ODE；Flow Map 是理论分析概念
+    </text>
+  </g>
+</svg>

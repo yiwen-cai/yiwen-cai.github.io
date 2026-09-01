@@ -36,12 +36,7 @@ B200 还有一个对 programmer 不可见的 tensor memory（TMEM），位于 re
 
 Programming model：
 
-```
-GPU kernel
-└── Grid (所有 block)
-    └── Thread block / CTA (一组 threads，共享 shared memory)
-        └── Thread (最小执行单元，私有 register)
-```
+![GPU 编程模型的层次结构](gpu-programming-model.svg)
 
 - **Thread**：执行一小部分数据的代码
 - **Thread block / CTA (Concurrent Thread Array)**：一组共享 shared memory 的 threads
@@ -100,11 +95,7 @@ Thread blocks 按 wave 调度到 SM 上。B200 有 148 个 SMs，如果 launch 1
 
 方法论三步循环：
 
-```
-1. Benchmark 和 profile 你的代码
-2. 做优化
-3. 再次 benchmark 和 profile
-```
+![优化方法论：测量驱动的迭代循环](benchmark-profile-loop.svg)
 
 ### Benchmarking
 
@@ -248,15 +239,7 @@ Naive matmul 的问题：每次读 $A[m,k]$ 和 $B[k,n]$ 从 HBM，计算后写 
 
 Tiling 方案：
 
-```
-1. 把 C 分成输出 tile（如 64×64），每个 block 负责一个 tile
-2. 每次从 HBM 加载一对 A tile（如 64×32）和 B tile（如 32×64）到 shared memory
-3. 在片上做这小块 matmul，累加到部分和
-4. 重复直到覆盖整个 K 维度
-5. 写回 HBM
-
-Arithmetic intensity ≈ O(tile_size)，远高于 naive 的 O(1)
-```
+![Triton Matmul Tiling：五步策略与 Arithmetic Intensity 改善](triton-matmul-tiling.svg)
 
 ```python
 @triton.jit
