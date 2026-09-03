@@ -1,4 +1,4 @@
 interface:
   display_name: "发布笔记"
-  short_description: "将 Markdown 笔记清理后发布到 Hugo + Blowfish 网站"
-  default_prompt: "把这篇 md 笔记发布到网站上"
+  short_description: "清理、验证并发布 Markdown 笔记到 Hugo + Blowfish 站点"
+  default_prompt: "使用 $publish-note 完成这篇笔记的发布前检查、提交、部署与线上验证。"
