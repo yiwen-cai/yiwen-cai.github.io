@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 820" width="760" height="820">
+  <!-- 背景 -->
+  <rect width="760" height="820" fill="#ffffff"/>
+
+  <defs>
+    <marker id="fm-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#495057" />
+    </marker>
+    <marker id="fm-merge" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#7950f2" />
+    </marker>
+  </defs>
+
+  <!-- 标题 -->
+  <text x="380" y="28" text-anchor="middle" font-size="17" font-weight="600" fill="#212529">
+    Flow Matching 概念依赖图
+  </text>
+
+  <!-- 第 2 章前置 -->
+  <g transform="translate(240, 50)">
+    <rect width="280" height="44" rx="8" fill="#f1f3f5" stroke="#adb5bd" stroke-width="2"/>
+    <text x="140" y="18" text-anchor="middle" font-size="12" font-weight="600" fill="#495057">第 2 章：流模型</text>
+    <text x="140" y="34" text-anchor="middle" font-size="10.5" font-family="monospace" fill="#868e96">dX_t = u_t(X_t) dt</text>
+  </g>
+  <line x1="380" y1="98" x2="380" y2="118" stroke="#495057" stroke-width="2" marker-end="url(#fm-arrow)"/>
+
+  <!-- 条件概率路径 -->
+  <g transform="translate(60, 122)">
+    <rect width="260" height="54" rx="8" fill="#e7f5ff" stroke="#74c0fc" stroke-width="2"/>
+    <text x="130" y="20" text-anchor="middle" font-size="11.5" font-weight="600" fill="#1864ab">条件概率路径</text>
+    <text x="130" y="36" text-anchor="middle" font-size="10" font-family="monospace" fill="#1971c2">p_t(·|z)</text>
+    <text x="130" y="48" text-anchor="middle" font-size="9.5" fill="#868e96">p_init → δ_z</text>
+  </g>
+
+  <!-- 对 z 边缘化（右侧平行） -->
+  <g transform="translate(440, 122)">
+    <rect width="260" height="54" rx="8" fill="#fff4e6" stroke="#ffc078" stroke-width="2"/>
+    <text x="130" y="20" text-anchor="middle" font-size="11.5" font-weight="600" fill="#d9480f">对 z ~ p_data 边缘化</text>
+    <text x="130" y="38" text-anchor="middle" font-size="10" fill="#e8590c">积分得边缘路径与</text>
+    <text x="130" y="50" text-anchor="middle" font-size="10" fill="#e8590c">边缘向量场</text>
+  </g>
+
+  <!-- 左侧下行：条件向量场 -->
+  <line x1="190" y1="180" x2="190" y2="200" stroke="#495057" stroke-width="2" marker-end="url(#fm-arrow)"/>
+  <g transform="translate(60, 204)">
+    <rect width="260" height="50" rx="8" fill="#e7f5ff" stroke="#74c0fc" stroke-width="2"/>
+    <text x="130" y="20" text-anchor="middle" font-size="11.5" font-weight="600" fill="#1864ab">条件向量场</text>
+    <text x="130" y="36" text-anchor="middle" font-size="10" font-family="monospace" fill="#1971c2">u_target(x|z)</text>
+  </g>
+
+  <!-- 右侧下行：边缘概率路径 -->
+  <line x1="570" y1="180" x2="570" y2="200" stroke="#495057" stroke-width="2" marker-end="url(#fm-arrow)"/>
+  <g transform="translate(440, 204)">
+    <rect width="260" height="50" rx="8" fill="#fff4e6" stroke="#ffc078" stroke-width="2"/>
+    <text x="130" y="20" text-anchor="middle" font-size="11.5" font-weight="600" fill="#d9480f">边缘概率路径 p_t</text>
+    <text x="130" y="36" text-anchor="middle" font-size="10" fill="#e8590c">p_init → p_data</text>
+  </g>
+
+  <!-- 两侧汇聚：边缘化技巧（定理 9） -->
+  <line x1="190" y1="258" x2="260" y2="298" stroke="#7950f2" stroke-width="2" marker-end="url(#fm-merge)"/>
+  <line x1="570" y1="258" x2="500" y2="298" stroke="#7950f2" stroke-width="2" marker-end="url(#fm-merge)"/>
+
+  <g transform="translate(200, 302)">
+    <rect width="360" height="58" rx="8" fill="#f3f0ff" stroke="#b197fc" stroke-width="2.5"/>
+    <text x="180" y="22" text-anchor="middle" font-size="12" font-weight="600" fill="#5f3dc4">边缘化技巧（定理 9）</text>
+    <text x="180" y="40" text-anchor="middle" font-size="10.5" fill="#7950f2">条件期望 = 后验加权平均</text>
+  </g>
+
+  <!-- 边缘向量场 -->
+  <line x1="380" y1="364" x2="380" y2="384" stroke="#495057" stroke-width="2" marker-end="url(#fm-arrow)"/>
+  <g transform="translate(160, 388)">
+    <rect width="440" height="62" rx="8" fill="#e6fcf5" stroke="#63e6be" stroke-width="2"/>
+    <text x="220" y="20" text-anchor="middle" font-size="11.5" font-weight="600" fill="#087f5b">边缘向量场 u_target(x)</text>
+    <text x="220" y="38" text-anchor="middle" font-size="10" fill="#099268">真正负责生成，但含不可计算积分</text>
+    <text x="220" y="52" text-anchor="middle" font-size="9.5" fill="#868e96">∫ u(x|z) · p(x|z)p(z)/p(x) dz</text>
+  </g>
+
+  <!-- 定理 12 -->
+  <line x1="380" y1="454" x2="380" y2="474" stroke="#495057" stroke-width="2" marker-end="url(#fm-arrow)"/>
+  <g transform="translate(140, 478)">
+    <rect width="480" height="54" rx="8" fill="#fff9db" stroke="#ffe066" stroke-width="2"/>
+    <text x="240" y="20" text-anchor="middle" font-size="12" font-weight="600" fill="#e67700">定理 12：L_FM = L_CFM + C</text>
+    <text x="240" y="38" text-anchor="middle" font-size="10.5" fill="#495057">边缘损失与条件损失只差常数，∇_θ 完全相同</text>
+  </g>
+
+  <!-- 条件 Flow Matching 损失 -->
+  <line x1="380" y1="536" x2="380" y2="556" stroke="#495057" stroke-width="2" marker-end="url(#fm-arrow)"/>
+  <g transform="translate(120, 560)">
+    <rect width="520" height="50" rx="8" fill="#e7f5ff" stroke="#74c0fc" stroke-width="2"/>
+    <text x="260" y="20" text-anchor="middle" font-size="11.5" font-weight="600" fill="#1864ab">条件 Flow Matching 损失</text>
+    <text x="260" y="38" text-anchor="middle" font-size="10" fill="#1971c2">可计算、simulation-free</text>
+  </g>
+
+  <!-- Gaussian CondOT -->
+  <line x1="380" y1="614" x2="380" y2="634" stroke="#495057" stroke-width="2" marker-end="url(#fm-arrow)"/>
+  <g transform="translate(100, 638)">
+    <rect width="560" height="62" rx="8" fill="#fff4e6" stroke="#ffc078" stroke-width="2"/>
+    <text x="280" y="20" text-anchor="middle" font-size="11.5" font-weight="600" fill="#d9480f">Gaussian CondOT</text>
+    <text x="280" y="38" text-anchor="middle" font-size="10" font-family="monospace" fill="#e8590c">x = tz + (1-t)ε</text>
+    <text x="280" y="52" text-anchor="middle" font-size="10" fill="#e8590c">监督速度 z - ε</text>
+  </g>
+
+  <!-- 训练完成 → ODE → 生成 -->
+  <line x1="380" y1="704" x2="380" y2="724" stroke="#495057" stroke-width="2" marker-end="url(#fm-arrow)"/>
+  <g transform="translate(160, 728)">
+    <rect width="440" height="62" rx="8" fill="#e6fcf5" stroke="#63e6be" stroke-width="2"/>
+    <text x="220" y="20" text-anchor="middle" font-size="11.5" font-weight="600" fill="#087f5b">训练完成 → 求解 ODE → 生成</text>
+    <text x="220" y="38" text-anchor="middle" font-size="10" font-family="monospace" fill="#099268">X_0 ~ p_init → dX_t = u_θ(X_t) dt</text>
+    <text x="220" y="52" text-anchor="middle" font-size="10" font-family="monospace" fill="#099268">→ X_1 ~ p_data</text>
+  </g>
+
+  <!-- 底部说明 -->
+  <text x="380" y="810" text-anchor="middle" font-size="10.5" fill="#868e96">
+    核心：通过回归条件目标（易算），间接学到边缘目标（真正要学的），训练无需模拟 ODE
+  </text>
+</svg>
