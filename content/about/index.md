@@ -11,7 +11,7 @@ showRelatedContent = false
 showTaxonomies = false
 +++
 
-我是 Yiwen Cai，北京邮电大学计算机技术专业硕士在读。我的研究兴趣集中在**算法与硬件之间的那一层**——GPU 算子优化与 LLM 训推优化。目前在腾讯混元 AI Infra 实习，做推理框架调度与高性能算子优化。
+我是 Yiwen Cai，北京邮电大学计算机技术专业硕士在读。我的研究兴趣集中在**算法与硬件之间的那一层**——GPU 算子优化与 LLM 训推优化。
 
 ## 教育经历
 
@@ -23,7 +23,7 @@ showTaxonomies = false
 
 ## 实习经历
 
-- **腾讯混元 AI Infra**（2026.07 – 至今）—— LLM 推理框架调度与高性能算子优化
+- **腾讯混元 AI Infra**（2026 年，实习已结束）—— LLM 推理框架调度与高性能算子优化
   - 覆盖 Blackwell 架构 attention / 量化 / 融合类算子，主要开源仓库 [Tencent/hpc-ops](https://github.com/Tencent/hpc-ops)
   - 部分贡献已合入 vLLM main 分支
 
