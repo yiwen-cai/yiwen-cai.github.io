@@ -49,4 +49,5 @@ showTaxonomies = false
 ## 联系
 
 - GitHub：[@yiwen-cai](https://github.com/yiwen-cai)
+- 知乎：[我的知乎主页](https://www.zhihu.com/people/cywww-14/)
 - 邮箱：caiyiwen.cs@foxmail.com

@@ -23,5 +23,6 @@ title = "Yiwen Cai"
   bio = "北邮计算机硕士在读。聚焦算法与硬件之间——CUDA、Triton 与 LLM 训推优化。"   # Profile 首页简介
   links = [
     { github = "https://github.com/yiwen-cai" },
+    { zhihu = "https://www.zhihu.com/people/cywww-14/" },
     { email = "mailto:caiyiwen.cs@foxmail.com" }
   ]

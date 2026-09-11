@@ -42,6 +42,8 @@
  * #generic-two-by-two(top-left: "", top-right: "", bottom-left: "", bottom-right: "")
  * #generic-one-by-two(left: "", right: "")
  */
+#align(center)[知乎：#link("https://www.zhihu.com/people/cywww-14/")[zhihu.com/people/cywww-14]]
+
 == 教育经历
 
 #edu(
@@ -68,7 +70,7 @@
   title: "LLM 高性能推理框架调度及高性能算子优化研究",
   location: "北京, 中国",
   company: "腾讯混元 AI Infra 部",
-  dates: dates-helper(start-date: "Jul 2026", end-date: "Present"),
+  dates: "2026 年，实习已结束",
 )
 - 负责 LLM 推理服务的推理框架调度优化与高性能算子优化
 - 开发算子包括 Blackwell 架构 BF16 paged KV attention prefill、nvfp4_blockwise_gemm、per_group MXFP8 量化、fused_silu_per_token_quant 融合算子等

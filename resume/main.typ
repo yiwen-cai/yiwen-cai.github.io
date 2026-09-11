@@ -39,6 +39,8 @@
  * #generic-two-by-two(top-left: "", top-right: "", bottom-left: "", bottom-right: "")
  * #generic-one-by-two(left: "", right: "")
  */
+#align(center)[Zhihu: #link("https://www.zhihu.com/people/cywww-14/")[zhihu.com/people/cywww-14]]
+
 == Education
 
 #edu(
@@ -65,7 +67,7 @@
   title: "LLM High-Performance Inference Framework Scheduling & Operator Optimization Research",
   location: "Beijing, China",
   company: "Tencent Hunyuan AI Infra",
-  dates: dates-helper(start-date: "Jul 2026", end-date: "Present"),
+  dates: "2026 (internship completed)",
 )
 - Optimized inference framework scheduling and high-performance operators for LLM serving
 - Developed operators including Blackwell-architecture BF16 paged KV attention prefill, nvfp4_blockwise_gemm, per_group MXFP8 quantization, and fused_silu_per_token_quant fusion kernel
