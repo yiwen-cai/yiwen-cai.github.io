@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 370" width="760" height="370">
+  <rect width="760" height="370" fill="#ffffff"/>
+  <defs>
+    <marker id="p-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#495057" />
+    </marker>
+  </defs>
+
+  <text x="380" y="26" text-anchor="middle" font-size="16" font-weight="600" fill="#212529">
+    短 Prefill (n &lt; 560) 的 Launch-Bound 真相与 Piecewise CUDA Graph 拆图算术
+  </text>
+
+  <!-- 左半部：为什么 n < 560 是 CPU Launch-bound -->
+  <g transform="translate(24, 44)">
+    <rect width="346" height="190" rx="8" fill="#fff5f5" stroke="#ffa8a8" stroke-width="1.8"/>
+    <text x="16" y="24" font-size="12.5" font-weight="600" fill="#c92a2a">1. Eager 模式下的异步耗时对比 (Llama-3-8B, H100)</text>
+
+    <text x="16" y="50" font-size="10.5" fill="#495057">• CPU Eager 启动 (~1000 Kernels × 9 µs)：</text>
+    <rect x="16" y="58" width="300" height="22" rx="4" fill="#e03131"/>
+    <text x="166" y="73" text-anchor="middle" font-size="10.5" font-weight="600" fill="#ffffff">t_CPU = 9.0 ms (成为端到端瓶颈！)</text>
+
+    <text x="16" y="102" font-size="10.5" fill="#495057">• GPU 执行 (n &lt; 560，受限于 16 GB 权重读取底噪)：</text>
+    <rect x="16" y="110" width="160" height="22" rx="4" fill="#1971c2"/>
+    <text x="96" y="125" text-anchor="middle" font-size="10.5" font-weight="600" fill="#ffffff">t_GPU = 4.8 ms</text>
+    <rect x="178" y="110" width="138" height="22" rx="4" fill="#ffe3e3" stroke="#ffa8a8" stroke-dasharray="3,2"/>
+    <text x="247" y="125" text-anchor="middle" font-size="9.5" fill="#c92a2a">4.2 ms GPU 饥饿等待</text>
+
+    <text x="16" y="154" font-size="10.5" fill="#2b8a3e" font-weight="600">• Piecewise CUDA Graph (33 段静态图 + 32 次 Attention)：</text>
+    <rect x="16" y="160" width="46" height="20" rx="3" fill="#2b8a3e"/>
+    <text x="70" y="174" font-size="10" fill="#2b8a3e" font-weight="600">t_CPU = 1.2 ms &lt; 4.8 ms (被 GPU 权重读取 100% 掩盖！)</text>
+  </g>
+
+  <!-- 右半部：Dynamo 在 Attention 处拆图 -->
+  <g transform="translate(386, 44)">
+    <rect width="350" height="190" rx="8" fill="#e7f5ff" stroke="#74c0fc" stroke-width="1.8"/>
+    <text x="16" y="24" font-size="12.5" font-weight="600" fill="#1864ab">2. PiecewiseCudaGraphRunner 拆图拓扑</text>
+    <text x="16" y="44" font-size="10" fill="#495057">总长固定 n=256 时，Linear/MLP 仅看二维 [256, d]，可静态录图；</text>
+    <text x="16" y="58" font-size="10" fill="#495057">唯独 Prefill Attention 依赖各请求切分边界 (qo/kv_indptr)，必须图外跑：</text>
+
+    <!-- Piece 0 -->
+    <rect x="16" y="72" width="96" height="44" rx="6" fill="#d0ebff" stroke="#1971c2" stroke-width="1.5"/>
+    <text x="64" y="91" text-anchor="middle" font-size="10" font-weight="600" fill="#1864ab">Graph Piece k</text>
+    <text x="64" y="106" text-anchor="middle" font-size="9" fill="#495057">RMSNorm + QKV</text>
+
+    <line x1="114" y1="94" x2="128" y2="94" stroke="#495057" stroke-width="1.6" marker-end="url(#p-arr)"/>
+
+    <!-- Eager Attn -->
+    <rect x="130" y="72" width="90" height="44" rx="6" fill="#fff4e6" stroke="#f76707" stroke-width="1.5" stroke-dasharray="4,2"/>
+    <text x="175" y="91" text-anchor="middle" font-size="10" font-weight="600" fill="#d9480f">Eager Attn</text>
+    <text x="175" y="106" text-anchor="middle" font-size="9" fill="#d9480f">动态 Ragged Plan</text>
+
+    <line x1="222" y1="94" x2="236" y2="94" stroke="#495057" stroke-width="1.6" marker-end="url(#p-arr)"/>
+
+    <!-- Piece 1 -->
+    <rect x="238" y="72" width="98" height="44" rx="6" fill="#d0ebff" stroke="#1971c2" stroke-width="1.5"/>
+    <text x="287" y="91" text-anchor="middle" font-size="10" font-weight="600" fill="#1864ab">Graph Piece k+1</text>
+    <text x="287" y="106" text-anchor="middle" font-size="9" fill="#495057">O_proj + SwiGLU</text>
+
+    <rect x="16" y="128" width="320" height="50" rx="6" fill="#ffffff" stroke="#a5d8ff"/>
+    <text x="26" y="146" font-size="10" font-weight="600" fill="#1971c2">Inductor 后端算子融合 (--cuda-graph-tc-compiler inductor)：</text>
+    <text x="26" y="164" font-size="9.5" fill="#495057">将每个 Piece 内的 SiLU(gate)*up 融合，省去 1.8 MB/token 的 HBM 往返读写</text>
+  </g>
+
+  <!-- 下半部：MLA 矩阵吸收 -->
+  <g transform="translate(24, 248)">
+    <rect width="712" height="106" rx="8" fill="#f3f0ff" stroke="#b197fc" stroke-width="1.8"/>
+    <text x="16" y="24" font-size="12.5" font-weight="600" fill="#5f3dc4">
+      3. DeepSeek MLA 的 Decode/Prefill 双态切换：矩阵吸收将 Decode 算术强度从 1~4 拉升至 128 FLOP/byte
+    </text>
+    <text x="16" y="48" font-size="10.5" fill="#495057">
+      • Decode 阶段（Memory-bound，采用矩阵吸收）：q_i · (c_KV W_UK,i)^T = (q_i W_UK,i^T) · c_KV^T
+    </text>
+    <text x="28" y="66" font-size="10" fill="#5f3dc4" font-weight="600">
+      把 W_UK 吸收进 Query、把 W_UV 吸收进 W_O → 全部 128 个 Query 头直接共享读取唯一 576 维潜向量 c_KV（算术强度 = 128 FLOP/byte）
+    </text>
+    <text x="16" y="88" font-size="10.5" fill="#495057">
+      • Prefill 阶段（Compute-bound，512 FLOP/byte，不做吸收）：显式将 c_KV 乘以 W_UK/W_UV 还原为 128 维标准多头 K/V，避免 576 维导致 FLOPs 暴涨 3 倍
+    </text>
+  </g>
+</svg>

@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 380" width="760" height="380">
+  <rect width="760" height="380" fill="#ffffff"/>
+  <defs>
+    <marker id="o-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#495057" />
+    </marker>
+    <marker id="o-purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5f3dc4" />
+    </marker>
+  </defs>
+
+  <text x="380" y="26" text-anchor="middle" font-size="16" font-weight="600" fill="#212529">
+    SGLang-Omni 七阶段三类调度器与双 GPU 默认放置拓扑 (Qwen3-Omni-30B-A3B)
+  </text>
+
+  <!-- GPU 0 容器 -->
+  <g transform="translate(20, 44)">
+    <rect width="465" height="224" rx="10" fill="#f8f9fa" stroke="#74c0fc" stroke-width="2"/>
+    <text x="14" y="22" font-size="12.5" font-weight="600" fill="#1864ab">GPU 0 (约 63.8 GB 权重)：Encoders + Thinker + Code2Wav</text>
+
+    <!-- SimpleScheduler Stages -->
+    <g transform="translate(14, 34)">
+      <rect width="132" height="82" rx="6" fill="#ebfbee" stroke="#8ce99a" stroke-width="1.5"/>
+      <text x="66" y="18" text-anchor="middle" font-size="10.5" font-weight="600" fill="#2b8a3e">SimpleScheduler</text>
+      <text x="66" y="34" text-anchor="middle" font-size="9.5" fill="#495057">• Preprocess (CPU)</text>
+      <text x="66" y="50" text-anchor="middle" font-size="9.5" fill="#495057">• Vision Enc (0.54B)</text>
+      <text x="66" y="66" text-anchor="middle" font-size="9.5" fill="#495057">• Audio Enc (0.65B)</text>
+    </g>
+
+    <line x1="148" y1="75" x2="168" y2="75" stroke="#495057" stroke-width="1.8" marker-end="url(#o-arr)"/>
+
+    <!-- Thinker -->
+    <g transform="translate(172, 34)">
+      <rect width="150" height="82" rx="6" fill="#e7f5ff" stroke="#1971c2" stroke-width="1.8"/>
+      <text x="75" y="18" text-anchor="middle" font-size="10.5" font-weight="600" fill="#1864ab">OmniScheduler</text>
+      <text x="75" y="36" text-anchor="middle" font-size="11" font-weight="600" fill="#212529">Thinker (30.5B MoE)</text>
+      <text x="75" y="54" text-anchor="middle" font-size="9.5" fill="#495057">开启 Radix + Overlap</text>
+      <text x="75" y="70" text-anchor="middle" font-size="9.5" fill="#1971c2">输出 Token ID + 2048d 向量</text>
+    </g>
+
+    <line x1="324" y1="58" x2="344" y2="58" stroke="#495057" stroke-width="1.6" marker-end="url(#o-arr)"/>
+
+    <!-- Detokenizer -->
+    <g transform="translate(346, 34)">
+      <rect width="105" height="52" rx="6" fill="#fff4e6" stroke="#ffc078" stroke-width="1.5"/>
+      <text x="52" y="18" text-anchor="middle" font-size="9.5" font-weight="600" fill="#d9480f">StreamingDetok</text>
+      <text x="52" y="34" text-anchor="middle" font-size="9" fill="#495057">文本流式输出</text>
+    </g>
+
+    <!-- Code2Wav (low busy 9-13%, placed on GPU 0!) -->
+    <g transform="translate(172, 132)">
+      <rect width="279" height="78" rx="6" fill="#fff4e6" stroke="#f76707" stroke-width="1.6"/>
+      <text x="139" y="18" text-anchor="middle" font-size="10.5" font-weight="600" fill="#d9480f">Code2WavScheduler · Code2Wav (0.22B 声码器)</text>
+      <text x="139" y="38" text-anchor="middle" font-size="9.5" fill="#495057">每攒够 10 帧触发一次滑动窗口，GPU 繁忙度仅 9%~13%</text>
+      <text x="139" y="56" text-anchor="middle" font-size="9.5" fill="#2b8a3e" font-weight="600">与 Thinker 共处 GPU 0 几乎零算力争抢！输出 24 kHz 音频流</text>
+    </g>
+  </g>
+
+  <!-- GPU 1 容器：Talker 独占 -->
+  <g transform="translate(505, 44)">
+    <rect width="235" height="224" rx="10" fill="#f3f0ff" stroke="#9775fa" stroke-width="2"/>
+    <text x="117" y="22" text-anchor="middle" font-size="12.5" font-weight="600" fill="#5f3dc4">GPU 1：Talker 独占 (86% 繁忙)</text>
+
+    <g transform="translate(14, 34)">
+      <rect width="207" height="176" rx="6" fill="#ffffff" stroke="#b197fc" stroke-width="1.5"/>
+      <text x="103" y="20" text-anchor="middle" font-size="10.5" font-weight="600" fill="#5f3dc4">QwenTalkerScheduler</text>
+      <text x="103" y="38" text-anchor="middle" font-size="11" font-weight="600" fill="#212529">Talker (3.3B) + Code Predictor</text>
+      <text x="103" y="58" text-anchor="middle" font-size="9.5" fill="#c92a2a" font-weight="600">✘ 关闭 RadixCache (输入为连续向量)</text>
+      <text x="103" y="74" text-anchor="middle" font-size="9.5" fill="#c92a2a" font-weight="600">✘ 关闭 Overlap (需等齐步内 16 码)</text>
+
+      <!-- 步内嵌 Code Predictor -->
+      <rect x="12" y="86" width="183" height="78" rx="5" fill="#f3f0ff" stroke="#d0bfff"/>
+      <text x="103" y="104" text-anchor="middle" font-size="9.5" font-weight="600" fill="#5f3dc4">单步内嵌 (80 ms 帧 = 16 RVQ 码)：</text>
+      <text x="103" y="122" text-anchor="middle" font-size="9" fill="#495057">1. Talker 主干预测主码 c_0</text>
+      <text x="103" y="138" text-anchor="middle" font-size="9" fill="#495057">2. Code Predictor 步内串行预测 c_1..c_15</text>
+      <text x="103" y="154" text-anchor="middle" font-size="8.5" fill="#868e96">(16 槽位短命 KV 每帧清零，无需独立 Stage)</text>
+    </g>
+  </g>
+
+  <!-- 跨卡 CUDA IPC 边 -->
+  <path d="M 322 96 L 518 96" fill="none" stroke="#5f3dc4" stroke-width="2" marker-end="url(#o-purple)"/>
+  <text x="495" y="90" text-anchor="end" font-size="9" font-weight="600" fill="#5f3dc4">CUDA IPC (Embedding)</text>
+
+  <path d="M 518 172 L 453 172" fill="none" stroke="#5f3dc4" stroke-width="2" marker-end="url(#o-purple)"/>
+  <text x="495" y="186" text-anchor="end" font-size="9" font-weight="600" fill="#5f3dc4">10 帧 RVQ Codes</text>
+
+  <!-- 底部 CommRouter 四级传输与共卡原因总结 -->
+  <g transform="translate(20, 282)">
+    <rect width="720" height="84" rx="8" fill="#fff5f5" stroke="#ffa8a8" stroke-width="1.5"/>
+    <text x="16" y="22" font-size="11.5" font-weight="600" fill="#c92a2a">
+      为什么默认将 Talker 隔离到 GPU 1，且 CommRouter 如何跨阶段路由？
+    </text>
+    <text x="16" y="44" font-size="10" fill="#495057">
+      • 显存与争用双重约束：① 32K 视频问答总显存需 85.7 GB &gt; 80 GB (H100)；② 即便在 141 GB H200 上将 Talker (86% 繁忙) 与 Thinker 共卡，
+    </text>
+    <text x="26" y="60" font-size="10" fill="#c92a2a" font-weight="600">
+      多进程内核轮流排队会导致首音延迟 (TTFA) p90 从 1.42 s 翻倍恶化至 2.66 s！
+    </text>
+    <text x="16" y="76" font-size="10" fill="#495057">
+      • CommRouter 四级传输：同进程传 Python 引用 (降 33% 延迟) | 同机跨卡走 CUDA IPC (DataReady/DataAck 槽位池) | 同机无 P2P 走 SHM | 跨机走 Mooncake
+    </text>
+  </g>
+</svg>

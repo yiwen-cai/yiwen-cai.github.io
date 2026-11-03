@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 360" width="760" height="360">
+  <rect width="760" height="360" fill="#ffffff"/>
+  <defs>
+    <marker id="d-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#495057" />
+    </marker>
+  </defs>
+
+  <text x="380" y="26" text-anchor="middle" font-size="16" font-weight="600" fill="#212529">
+    Code2Wav 25+10 左上下文滑动窗口与 Full-Duplex (/v1/realtime) 会话状态机
+  </text>
+
+  <!-- 上半部：Code2Wav 25+10 窗口消除接缝爆音 -->
+  <g transform="translate(24, 44)">
+    <rect width="712" height="138" rx="8" fill="#fff4e6" stroke="#ffc078" stroke-width="1.8"/>
+    <text x="16" y="24" font-size="12.5" font-weight="600" fill="#d9480f">
+      1. 无状态声码器 Code2Wav 的接缝爆音消除：重算前 25 帧左上下文 + 截取后 10 帧新波形 (decode_delta)
+    </text>
+    <text x="16" y="44" font-size="10" fill="#495057">
+      硬实时节拍：1 帧 = 80 ms (1920 采样点 @ 24kHz) = 16 步 RVQ → 整批单步耗时必须 ≤ 5 ms 才能防止播放器断流 (Underrun)
+    </text>
+
+    <!-- 25 历史帧 -->
+    <rect x="24" y="58" width="340" height="38" rx="6" fill="#ffe8cc" stroke="#fd7e14" stroke-width="1.5" stroke-dasharray="4,2"/>
+    <text x="194" y="75" text-anchor="middle" font-size="10.5" font-weight="600" fill="#d9480f">前序已播放的 25 帧历史 RVQ Codes (left_context_size = 25)</text>
+    <text x="194" y="90" text-anchor="middle" font-size="9.5" fill="#868e96">送入 8 层 Transformer + Conv 提供声学相位上下文，算完后直接丢弃波形</text>
+
+    <!-- 10 新帧 -->
+    <rect x="368" y="58" width="210" height="38" rx="6" fill="#ebfbee" stroke="#2b8a3e" stroke-width="2"/>
+    <text x="473" y="75" text-anchor="middle" font-size="10.5" font-weight="600" fill="#2b8a3e">新到达的 10 帧 (stream_chunk = 10)</text>
+    <text x="473" y="90" text-anchor="middle" font-size="9.5" fill="#2b8a3e">仅截取最后 10 × 1920 个采样点下发！</text>
+
+    <text x="590" y="74" font-size="10" font-weight="600" fill="#1864ab">总窗口 = 35 帧</text>
+    <text x="590" y="90" font-size="9.5" fill="#495057">(预录 10/20/30/35 图)</text>
+
+    <text x="16" y="122" font-size="10" fill="#2b8a3e" font-weight="600">
+      ★ 首窗加速 (PR #2800)：将首个窗口从 10 帧缩减为 4 帧 (initial_codec_chunk_frames=4)，首音延迟 p95 从 0.61 s 降至 0.48 s！
+    </text>
+  </g>
+
+  <!-- 下半部：Full Duplex SessionController vs RadixCache -->
+  <g transform="translate(24, 196)">
+    <rect width="712" height="148" rx="8" fill="#e7f5ff" stroke="#74c0fc" stroke-width="1.8"/>
+    <text x="16" y="24" font-size="12.5" font-weight="600" fill="#1864ab">
+      2. 原生全双工 (/v1/realtime，1 秒音频切片)：为什么必须弃用 RadixCache 改用显式 SessionController？
+    </text>
+
+    <g transform="translate(16, 36)">
+      <rect width="325" height="96" rx="6" fill="#fff5f5" stroke="#ffa8a8" stroke-width="1.4"/>
+      <text x="162" y="20" text-anchor="middle" font-size="10.5" font-weight="600" fill="#c92a2a">为什么 RadixCache 在全双工音频下彻底失灵？</text>
+      <text x="12" y="42" font-size="9.5" fill="#495057">1. 占位符冲突：每秒音频 Embedding 挂载在完全相同的</text>
+      <text x="22" y="56" font-size="9.5" fill="#c92a2a" font-weight="600">通用占位符 Token ID (&lt;audio_pad&gt;) 下，RadixTree 无法区分！</text>
+      <text x="12" y="76" font-size="9.5" fill="#495057">2. 非 LLM 状态：Perception 与 Speech 的流式状态不在树中。</text>
+    </g>
+
+    <line x1="345" y1="84" x2="367" y2="84" stroke="#495057" stroke-width="1.8" marker-end="url(#d-arr)"/>
+
+    <g transform="translate(371, 36)">
+      <rect width="325" height="96" rx="6" fill="#ffffff" stroke="#1971c2" stroke-width="1.6"/>
+      <text x="162" y="20" text-anchor="middle" font-size="10.5" font-weight="600" fill="#1864ab">SGLang-Omni 显式 Session 状态保持契约</text>
+      <text x="12" y="40" font-size="9.5" fill="#495057">• Thinker/Talker：ARSessionBridge 对接 SessionController，</text>
+      <text x="20" y="54" font-size="9.5" fill="#1971c2" font-weight="600">按 session_id 直接锁定并增量续写同一份常驻 KV Cache。</text>
+      <text x="12" y="72" font-size="9.5" fill="#495057">• 铁律 1：Unit 2 必须等 Unit 1 走完 4 阶段（决定听/说）后才入队。</text>
+      <text x="12" y="88" font-size="9.5" fill="#495057">• 铁律 2：多副本下同一 Session 终身绑定 (Pin) 固定 Stage 副本。</text>
+    </g>
+  </g>
+</svg>

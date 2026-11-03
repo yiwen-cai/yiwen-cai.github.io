@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 390" width="760" height="390">
+  <rect width="760" height="390" fill="#ffffff"/>
+  <defs>
+    <marker id="r-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#495057" />
+    </marker>
+    <marker id="r-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2b8a3e" />
+    </marker>
+  </defs>
+
+  <text x="380" y="26" text-anchor="middle" font-size="16" font-weight="600" fill="#212529">
+    sgl-router 影子前缀树网关、Mooncake 逐层 PD 分离与 HiCache 三级存储金字塔
+  </text>
+
+  <!-- 左侧：sgl-router 网关 -->
+  <g transform="translate(20, 44)">
+    <rect width="215" height="210" rx="8" fill="#f3f0ff" stroke="#9775fa" stroke-width="1.8"/>
+    <text x="107" y="22" text-anchor="middle" font-size="12" font-weight="600" fill="#5f3dc4">Ch 29 · sgl-router (Rust)</text>
+    <text x="107" y="40" text-anchor="middle" font-size="9.5" fill="#495057">双模态缓存感知路由 (cache_aware)</text>
+
+    <rect x="12" y="50" width="191" height="66" rx="5" fill="#ffffff" stroke="#d0bfff"/>
+    <text x="107" y="68" text-anchor="middle" font-size="10" font-weight="600" fill="#5f3dc4">1. 近似影子前缀树 + 队列水位</text>
+    <text x="107" y="84" text-anchor="middle" font-size="9" fill="#495057">• 负载均衡时：按最长前缀亲和路由</text>
+    <text x="107" y="100" text-anchor="middle" font-size="9" fill="#2b8a3e" font-weight="600">• 节点过载时：自动分流至最闲实例</text>
+
+    <rect x="12" y="126" width="191" height="72" rx="5" fill="#ffffff" stroke="#d0bfff"/>
+    <text x="107" y="144" text-anchor="middle" font-size="10" font-weight="600" fill="#1864ab">2. PD 成对协同调度</text>
+    <text x="107" y="162" text-anchor="middle" font-size="9" fill="#495057">同时挑出「高缓存命中的 Prefill」</text>
+    <text x="107" y="176" text-anchor="middle" font-size="9" fill="#495057">与「低队列水位的 Decode」并注入</text>
+    <text x="107" y="190" text-anchor="middle" font-size="9" fill="#5f3dc4" font-weight="600">共享 bootstrap_room ID</text>
+  </g>
+
+  <line x1="237" y1="110" x2="263" y2="110" stroke="#495057" stroke-width="1.8" marker-end="url(#r-arr)"/>
+  <line x1="237" y1="190" x2="263" y2="190" stroke="#495057" stroke-width="1.8" marker-end="url(#r-arr)"/>
+
+  <!-- 右上：Ch 28 PD 分离 -->
+  <g transform="translate(266, 44)">
+    <rect width="474" height="210" rx="8" fill="#e7f5ff" stroke="#74c0fc" stroke-width="1.8"/>
+    <text x="16" y="22" font-size="12" font-weight="600" fill="#1864ab">
+      Ch 28 · Prefill-Decode 分离：两个时钟、两套并行拓扑与 Mooncake 逐层 RDMA
+    </text>
+
+    <!-- Prefill 集群 -->
+    <g transform="translate(14, 34)">
+      <rect width="206" height="162" rx="6" fill="#fff5f5" stroke="#ffa8a8" stroke-width="1.5"/>
+      <text x="103" y="18" text-anchor="middle" font-size="10.5" font-weight="600" fill="#c92a2a">Prefill 实例池 (TTFT 大步慢钟)</text>
+      <text x="103" y="34" text-anchor="middle" font-size="9" fill="#495057">算力密集 · 适合小 TP / PP</text>
+
+      <rect x="12" y="44" width="182" height="26" rx="4" fill="#ffe3e3" stroke="#ffc9c9"/>
+      <text x="103" y="61" text-anchor="middle" font-size="9.5" font-weight="600" fill="#c92a2a">Layer l 前向完成 → 写入 KV_l</text>
+
+      <rect x="12" y="76" width="182" height="26" rx="4" fill="#ffe3e3" stroke="#ffc9c9"/>
+      <text x="103" y="93" text-anchor="middle" font-size="9.5" font-weight="600" fill="#c92a2a">Layer l+1 前向计算 (与传输重叠)</text>
+
+      <text x="103" y="122" text-anchor="middle" font-size="9" fill="#495057">... 算完 Layer 32 采样出 first_token</text>
+      <text x="103" y="144" text-anchor="middle" font-size="9" fill="#2b8a3e" font-weight="600">避免长 Prefill 阻塞 Decode 尾延迟</text>
+    </g>
+
+    <!-- Mooncake RDMA 箭头 -->
+    <line x1="222" y1="91" x2="252" y2="91" stroke="#2b8a3e" stroke-width="2" marker-end="url(#r-green)"/>
+    <line x1="222" y1="123" x2="252" y2="123" stroke="#2b8a3e" stroke-width="2" marker-end="url(#r-green)"/>
+    <text x="237" y="78" text-anchor="middle" font-size="8.5" font-weight="600" fill="#2b8a3e">Mooncake</text>
+    <text x="237" y="144" text-anchor="middle" font-size="8.5" font-weight="600" fill="#2b8a3e">逐层 RDMA</text>
+
+    <!-- Decode 集群 -->
+    <g transform="translate(254, 34)">
+      <rect width="206" height="162" rx="6" fill="#ebfbee" stroke="#8ce99a" stroke-width="1.5"/>
+      <text x="103" y="18" text-anchor="middle" font-size="10.5" font-weight="600" fill="#2b8a3e">Decode 实例池 (TPOT 高频快钟)</text>
+      <text x="103" y="34" text-anchor="middle" font-size="9" fill="#495057">访存密集 · 大 DP Attention + 宽 EP + TBO</text>
+
+      <rect x="12" y="44" width="182" height="26" rx="4" fill="#d3f9d8" stroke="#8ce99a"/>
+      <text x="103" y="61" text-anchor="middle" font-size="9.5" font-weight="600" fill="#2b8a3e">PreallocQueue 预分配目标槽位</text>
+
+      <rect x="12" y="76" width="182" height="26" rx="4" fill="#d3f9d8" stroke="#8ce99a"/>
+      <text x="103" y="93" text-anchor="middle" font-size="9.5" font-weight="600" fill="#2b8a3e">GPUDirect RDMA 零拷贝落盘 HBM</text>
+
+      <text x="103" y="122" text-anchor="middle" font-size="9" fill="#495057">收到末层 KV + first_token_id 后</text>
+      <text x="103" y="144" text-anchor="middle" font-size="9.5" font-weight="600" fill="#1864ab">无缝并入 running_batch 从第 2 词自回归</text>
+    </g>
+  </g>
+
+  <!-- 底部：Ch 27 HiCache 三级缓存 -->
+  <g transform="translate(20, 268)">
+    <rect width="720" height="106" rx="8" fill="#fff4e6" stroke="#ffc078" stroke-width="1.8"/>
+    <text x="16" y="24" font-size="12" font-weight="600" fill="#d9480f">
+      Ch 27 · Hierarchical KV Cache (HiCache)：L1 (GPU HBM ~55GB) ⇄ L2 (Host Pinned DRAM 数百GB) ⇄ L3 (NVMe / Mooncake 数TB)
+    </text>
+    <text x="16" y="48" font-size="10" fill="#495057">
+      • 复杂度降维：PCIe Gen5 H2D 搬运带宽 (~64 GB/s，GH200 NVLink-C2C 达 900 GB/s) 为线性 O(L) 开销（搬 1K tokens = 128 MB 仅需 ~2 ms），远快于 O(L²) 重算！
+    </text>
+    <text x="16" y="70" font-size="10" fill="#2b8a3e" font-weight="600">
+      • 逐层流水预取 (Layer-wise Pipelined Prefetching)：当请求命中 L2 CPU 内存时，GPU 算第 l 层的同时 DMA 异步将第 l+1 层 KV 搬入 HBM，完全隐藏 PCIe 延迟。
+    </text>
+    <text x="16" y="90" font-size="10" fill="#495057">
+      • 异步写回策略：通过独立 CUDA 传输流支持 write_through / write_through_selective / write_back，突破单卡 80 GB 显存容量天花板。
+    </text>
+  </g>
+</svg>

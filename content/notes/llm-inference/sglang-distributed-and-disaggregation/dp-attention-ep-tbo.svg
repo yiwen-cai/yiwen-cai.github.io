@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 380" width="760" height="380">
+  <rect width="760" height="380" fill="#ffffff"/>
+  <defs>
+    <marker id="m-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#495057" />
+    </marker>
+    <marker id="m-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1971c2" />
+    </marker>
+  </defs>
+
+  <text x="380" y="26" text-anchor="middle" font-size="16" font-weight="600" fill="#212529">
+    DeepSeek-V3 层内异构并行 (DP Attention + MoE EP) 与 Two-Batch Overlap (TBO) 乒乓流水
+  </text>
+
+  <!-- 上半部：为什么不用传统 TP=8 而用 DP Attention + EP -->
+  <g transform="translate(20, 42)">
+    <rect width="720" height="156" rx="8" fill="#f8f9fa" stroke="#74c0fc" stroke-width="1.8"/>
+    <text x="16" y="22" font-size="12.5" font-weight="600" fill="#1864ab">
+      1. 单个 Transformer 层内的并行范式切换：前半层 DP Attention (省 8 倍 KV) → 后半层 MoE EP (凑大 Batch)
+    </text>
+    <text x="16" y="42" font-size="10" fill="#c92a2a" font-weight="600">
+      ✘ 传统 TP=8 灾难：MLA 的 128 个头共享唯一 1 个 576 维潜向量 c_KV (无法按头切分) → 8 张卡被迫重复存 8 份相同 KV Cache！
+    </text>
+
+    <!-- DP Attention -->
+    <g transform="translate(18, 54)">
+      <rect width="205" height="86" rx="6" fill="#e7f5ff" stroke="#1971c2" stroke-width="1.6"/>
+      <text x="102" y="18" text-anchor="middle" font-size="10.5" font-weight="600" fill="#1864ab">前半层：DP Attention (DP=8)</text>
+      <text x="102" y="36" text-anchor="middle" font-size="9.5" fill="#495057">• GPU i 仅持有第 i 组请求的 c_KV</text>
+      <text x="102" y="52" text-anchor="middle" font-size="9.5" fill="#2b8a3e" font-weight="600">• 全集群每条请求 KV 只存 1 份！</text>
+      <text x="102" y="68" text-anchor="middle" font-size="9.5" fill="#495057">• 独立算完 128 头，免去 All-Reduce</text>
+    </g>
+
+    <line x1="226" y1="97" x2="254" y2="97" stroke="#1971c2" stroke-width="2" marker-end="url(#m-blue)"/>
+
+    <!-- All-to-All Dispatch -->
+    <g transform="translate(258, 64)">
+      <rect width="98" height="66" rx="6" fill="#fff4e6" stroke="#f76707" stroke-width="1.5"/>
+      <text x="49" y="24" text-anchor="middle" font-size="10" font-weight="600" fill="#d9480f">All-to-All</text>
+      <text x="49" y="40" text-anchor="middle" font-size="10" font-weight="600" fill="#d9480f">Dispatch</text>
+      <text x="49" y="56" text-anchor="middle" font-size="8.5" fill="#495057">(DeepEP 跨卡分发)</text>
+    </g>
+
+    <line x1="359" y1="97" x2="387" y2="97" stroke="#1971c2" stroke-width="2" marker-end="url(#m-blue)"/>
+
+    <!-- MoE EP -->
+    <g transform="translate(391, 54)">
+      <rect width="190" height="86" rx="6" fill="#ebfbee" stroke="#2b8a3e" stroke-width="1.6"/>
+      <text x="95" y="18" text-anchor="middle" font-size="10.5" font-weight="600" fill="#2b8a3e">后半层：MoE FFN (EP=8/64)</text>
+      <text x="95" y="36" text-anchor="middle" font-size="9.5" fill="#495057">• 671B 专家权重跨卡切分共享</text>
+      <text x="95" y="52" text-anchor="middle" font-size="9.5" fill="#2b8a3e" font-weight="600">• 汇聚全部 DP 分支的同专家 Token</text>
+      <text x="95" y="68" text-anchor="middle" font-size="9.5" fill="#495057">• 凑齐大 Batch 摊薄专家权重读取</text>
+    </g>
+
+    <line x1="584" y1="97" x2="606" y2="97" stroke="#1971c2" stroke-width="2" marker-end="url(#m-blue)"/>
+
+    <!-- Combine -->
+    <g transform="translate(610, 64)">
+      <rect width="94" height="66" rx="6" fill="#fff4e6" stroke="#f76707" stroke-width="1.5"/>
+      <text x="47" y="24" text-anchor="middle" font-size="10" font-weight="600" fill="#d9480f">All-to-All</text>
+      <text x="47" y="40" text-anchor="middle" font-size="10" font-weight="600" fill="#d9480f">Combine</text>
+      <text x="47" y="56" text-anchor="middle" font-size="8.5" fill="#495057">(散回各 DP 秩)</text>
+    </g>
+  </g>
+
+  <!-- 下半部：Two-Batch Overlap (TBO) -->
+  <g transform="translate(20, 212)">
+    <rect width="720" height="152" rx="8" fill="#f3f0ff" stroke="#b197fc" stroke-width="1.8"/>
+    <text x="16" y="24" font-size="12.5" font-weight="600" fill="#5f3dc4">
+      2. Two-Batch Overlap (TBO)：将单步拆为 Micro-batch A / B，在计算流与通信流上乒乓重叠
+    </text>
+    <text x="16" y="42" font-size="10" fill="#495057">
+      为什么必须拆成两个微批次？因为单个 Batch 内部「Dispatch 通信 → MoE 计算 → Combine 通信」具有严格串行因果依赖！
+    </text>
+
+    <!-- Compute Stream -->
+    <text x="16" y="74" font-size="10.5" font-weight="600" fill="#1864ab">Compute Stream</text>
+    <rect x="118" y="56" width="130" height="26" rx="4" fill="#1971c2"/>
+    <text x="183" y="73" text-anchor="middle" font-size="10" font-weight="600" fill="#ffffff">Batch A: Attention</text>
+
+    <rect x="252" y="56" width="130" height="26" rx="4" fill="#5f3dc4"/>
+    <text x="317" y="73" text-anchor="middle" font-size="10" font-weight="600" fill="#ffffff">Batch B: Attention</text>
+
+    <rect x="386" y="56" width="145" height="26" rx="4" fill="#1971c2"/>
+    <text x="458" y="73" text-anchor="middle" font-size="10" font-weight="600" fill="#ffffff">Batch A: MoE GEMM</text>
+
+    <rect x="535" y="56" width="145" height="26" rx="4" fill="#5f3dc4"/>
+    <text x="607" y="73" text-anchor="middle" font-size="10" font-weight="600" fill="#ffffff">Batch B: MoE GEMM</text>
+
+    <!-- Comm Stream -->
+    <text x="16" y="110" font-size="10.5" font-weight="600" fill="#d9480f">Comm Stream</text>
+    <rect x="252" y="92" width="130" height="26" rx="4" fill="#f76707"/>
+    <text x="317" y="109" text-anchor="middle" font-size="10" font-weight="600" fill="#ffffff">Batch A: Dispatch</text>
+
+    <rect x="386" y="92" width="145" height="26" rx="4" fill="#e8590c"/>
+    <text x="458" y="109" text-anchor="middle" font-size="10" font-weight="600" fill="#ffffff">Batch B: Dispatch</text>
+
+    <rect x="535" y="92" width="145" height="26" rx="4" fill="#f76707"/>
+    <text x="607" y="109" text-anchor="middle" font-size="10" font-weight="600" fill="#ffffff">Batch A: Combine</text>
+
+    <text x="360" y="140" text-anchor="middle" font-size="10.5" font-weight="600" fill="#2b8a3e">
+      结果：跨卡 All-to-All 通信被完全隐藏在另一微批次的 SM 计算背后 → t_step ≈ max(t_comp, t_comm)
+    </text>
+  </g>
+</svg>
