@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 326" width="720" height="326">
+<rect width="720" height="326" fill="#ffffff"/>
+<line x1="52" y1="57.4" x2="692" y2="57.4" stroke="#8A8780" stroke-width="1" stroke-dasharray="4 4"/>
+<text x="44.0" y="61.4" fill="#8A8780" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" text-anchor="end">12.5</text>
+<line x1="52.0" y1="236" x2="52.0" y2="36" stroke="#E3DACC" stroke-width="1" stroke-dasharray="3 4"/>
+<text x="52.0" y="254.0" fill="#141413" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" text-anchor="middle">FULL</text>
+<line x1="436.0" y1="236" x2="436.0" y2="36" stroke="#E3DACC" stroke-width="1" stroke-dasharray="3 4"/>
+<text x="436.0" y="254.0" fill="#D97757" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" text-anchor="middle">FULL</text>
+<line x1="692.0" y1="236" x2="692.0" y2="36" stroke="#E3DACC" stroke-width="1" stroke-dasharray="3 4"/>
+<text x="692.0" y="254.0" fill="#788C5D" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" text-anchor="middle">FULL</text>
+<line x1="52" y1="236" x2="692" y2="236" stroke="#141413" stroke-width="1.2"/><line x1="52" y1="236" x2="52" y2="30" stroke="#141413" stroke-width="1.2"/>
+<path d="M 52.0 236.0 L 58.4 235.9 L 64.8 235.7 L 71.2 235.4 L 77.6 234.9 L 84.0 234.2 L 90.4 233.4 L 96.8 232.5 L 103.2 231.4 L 109.6 230.2 L 116.0 228.9 L 122.4 227.4 L 128.8 225.7 L 135.2 223.9 L 141.6 222.0 L 148.0 219.9 L 154.4 217.7 L 160.8 215.4 L 167.2 212.9 L 173.6 210.2 L 180.0 207.4 L 186.4 204.5 L 192.8 201.4 L 199.2 198.2 L 205.6 194.9 L 212.0 191.4 L 218.4 187.7 L 224.8 183.9 L 231.2 180.0 L 237.6 175.9 L 244.0 171.7 L 250.4 167.4 L 256.8 162.9 L 263.2 158.2 L 269.6 153.4 L 276.0 148.5 L 282.4 143.4 L 288.8 138.2 L 295.2 132.9 L 301.6 127.4 L 308.0 121.7 L 314.4 115.9 L 320.8 110.0 L 327.2 103.9 L 333.6 97.7 L 340.0 91.4 L 346.4 84.9 L 352.8 78.2 L 359.2 71.4 L 365.6 64.5 L 372.0 57.4" fill="none" stroke="#D97757" stroke-width="2"/>
+<path d="M 436.0 236.0 L 442.4 235.9 L 448.8 235.7 L 455.2 235.4 L 461.6 234.9 L 468.0 234.2 L 474.4 233.4 L 480.8 232.5 L 487.2 231.4 L 493.6 230.2 L 500.0 228.9 L 506.4 227.4 L 512.8 225.7 L 519.2 223.9 L 525.6 222.0 L 532.0 219.9 L 538.4 217.7 L 544.8 215.4 L 551.2 212.9 L 557.6 210.2 L 564.0 207.4 L 570.4 204.5 L 576.8 201.4 L 583.2 198.2 L 589.6 194.9 L 596.0 191.4 L 602.4 187.7 L 608.8 183.9 L 615.2 180.0 L 621.6 175.9 L 628.0 171.7 L 634.4 167.4 L 640.8 162.9 L 647.2 158.2 L 653.6 153.4 L 660.0 148.5 L 666.4 143.4 L 672.8 138.2 L 679.2 132.9 L 685.6 127.4 L 692.0 121.7" fill="none" stroke="#D97757" stroke-width="2"/>
+<line x1="372.0" y1="57.4" x2="436.0" y2="236.0" stroke="#D97757" stroke-width="1.2" stroke-dasharray="3 3"/>
+<path d="M 52.0 236.0 L 58.4 228.9 L 64.8 222.0 L 71.2 215.2 L 77.6 208.6 L 84.0 202.1 L 90.4 195.7 L 96.8 189.5 L 103.2 183.4 L 109.6 177.5 L 116.0 171.7 L 122.4 166.1 L 128.8 160.6 L 135.2 155.2 L 141.6 150.0 L 148.0 144.9 L 154.4 140.0 L 160.8 135.2 L 167.2 130.6 L 173.6 126.1 L 180.0 121.7 L 186.4 117.5 L 192.8 113.4 L 199.2 109.5 L 205.6 105.7 L 212.0 102.1 L 218.4 98.6 L 224.8 95.2 L 231.2 92.0 L 237.6 88.9 L 244.0 86.0 L 250.4 83.2 L 256.8 80.6 L 263.2 78.1 L 269.6 75.7 L 276.0 73.5 L 282.4 71.4 L 288.8 69.5 L 295.2 67.7 L 301.6 66.1 L 308.0 64.6 L 314.4 63.2 L 320.8 62.0 L 327.2 60.9 L 333.6 60.0 L 340.0 59.2 L 346.4 58.6 L 352.8 58.1 L 359.2 57.7 L 365.6 57.5 L 372.0 57.4 L 378.4 57.5 L 384.8 57.7 L 391.2 58.1 L 397.6 58.6 L 404.0 59.2 L 410.4 60.0 L 416.8 60.9 L 423.2 62.0 L 429.6 63.2 L 436.0 64.6 L 442.4 66.1 L 448.8 67.7 L 455.2 69.5 L 461.6 71.4 L 468.0 73.5 L 474.4 75.7 L 480.8 78.1 L 487.2 80.6 L 493.6 83.2 L 500.0 86.0 L 506.4 88.9 L 512.8 92.0 L 519.2 95.2 L 525.6 98.6 L 532.0 102.1 L 538.4 105.7 L 544.8 109.5 L 551.2 113.4 L 557.6 117.5 L 564.0 121.7 L 570.4 126.1 L 576.8 130.6 L 583.2 135.2 L 589.6 140.0 L 596.0 144.9 L 602.4 150.0 L 608.8 155.2 L 615.2 160.6 L 621.6 166.1 L 628.0 171.7 L 634.4 177.5 L 640.8 183.4 L 647.2 189.5 L 653.6 195.7 L 660.0 202.1 L 666.4 208.6 L 672.8 215.2 L 679.2 222.0 L 685.6 228.9 L 692.0 236.0" fill="none" stroke="#788C5D" stroke-width="2"/>
+<circle cx="116.0" cy="228.9" r="3" fill="#D97757"/>
+<circle cx="180.0" cy="207.4" r="3" fill="#D97757"/>
+<circle cx="244.0" cy="171.7" r="3" fill="#D97757"/>
+<circle cx="308.0" cy="121.7" r="3" fill="#D97757"/>
+<circle cx="372.0" cy="57.4" r="3" fill="#D97757"/>
+<circle cx="500.0" cy="228.9" r="3" fill="#D97757"/>
+<circle cx="564.0" cy="207.4" r="3" fill="#D97757"/>
+<circle cx="628.0" cy="171.7" r="3" fill="#D97757"/>
+<circle cx="692.0" cy="121.7" r="3" fill="#D97757"/>
+<circle cx="116.0" cy="171.7" r="3" fill="#ffffff" stroke="#788C5D" stroke-width="1.6"/>
+<circle cx="180.0" cy="121.7" r="3" fill="#ffffff" stroke="#788C5D" stroke-width="1.6"/>
+<circle cx="244.0" cy="86.0" r="3" fill="#ffffff" stroke="#788C5D" stroke-width="1.6"/>
+<circle cx="308.0" cy="64.6" r="3" fill="#ffffff" stroke="#788C5D" stroke-width="1.6"/>
+<circle cx="372.0" cy="57.4" r="3" fill="#ffffff" stroke="#788C5D" stroke-width="1.6"/>
+<circle cx="436.0" cy="64.6" r="3" fill="#ffffff" stroke="#788C5D" stroke-width="1.6"/>
+<circle cx="500.0" cy="86.0" r="3" fill="#ffffff" stroke="#788C5D" stroke-width="1.6"/>
+<circle cx="564.0" cy="121.7" r="3" fill="#ffffff" stroke="#788C5D" stroke-width="1.6"/>
+<circle cx="628.0" cy="171.7" r="3" fill="#ffffff" stroke="#788C5D" stroke-width="1.6"/>
+<circle cx="372.0" cy="57.4" r="3.5" fill="#D97757"/>
+<circle cx="372.0" cy="57.4" r="7" fill="none" stroke="#788C5D" stroke-width="1.5"/>
+<text x="180.4" y="168.9" fill="#D97757" font-family="Georgia, 'Times New Roman', serif" font-size="13.5" text-anchor="end">½&#183;<tspan font-style="italic">d</tspan></text>
+<text x="181.4" y="172.9" fill="#D97757" font-family="Georgia, 'Times New Roman', serif" font-size="9.5" text-anchor="start">L</text>
+<text x="181.4" y="163.9" fill="#D97757" font-family="Georgia, 'Times New Roman', serif" font-size="9.5" text-anchor="start">2</text>
+<text x="540.4" y="71.7" fill="#788C5D" font-family="Georgia, 'Times New Roman', serif" font-size="13.5" text-anchor="end">½&#183;<tspan font-style="italic">d</tspan></text>
+<text x="541.4" y="75.7" fill="#788C5D" font-family="Georgia, 'Times New Roman', serif" font-size="9.5" text-anchor="start">L</text>
+<text x="548.4" y="71.7" fill="#788C5D" font-family="Georgia, 'Times New Roman', serif" font-size="13.5" text-anchor="start">&#183;<tspan font-style="italic">d</tspan></text>
+<text x="558.9" y="75.7" fill="#788C5D" font-family="Georgia, 'Times New Roman', serif" font-size="9.5" text-anchor="start">R</text>
+<text x="14.0" y="20.0" fill="#8A8780" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" text-anchor="start">误差 / H''</text>
+<line x1="52.0" y1="272" x2="436.0" y2="272" stroke="#D97757" stroke-width="1.4"/>
+<line x1="52.0" y1="268" x2="52.0" y2="276" stroke="#D97757" stroke-width="1.4"/>
+<line x1="436.0" y1="268" x2="436.0" y2="276" stroke="#D97757" stroke-width="1.4"/>
+<text x="244.0" y="287.0" fill="#D97757" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" text-anchor="middle">开环 N = 6</text>
+<line x1="52.0" y1="300" x2="692.0" y2="300" stroke="#788C5D" stroke-width="1.4"/>
+<line x1="52.0" y1="296" x2="52.0" y2="304" stroke="#788C5D" stroke-width="1.4"/>
+<line x1="692.0" y1="296" x2="692.0" y2="304" stroke="#788C5D" stroke-width="1.4"/>
+<text x="372.0" y="315.0" fill="#788C5D" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" text-anchor="middle">Z-Cache N = 10</text>
+</svg>
