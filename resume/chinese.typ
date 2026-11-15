@@ -89,12 +89,21 @@
 
 == 开源贡献与项目经验
 
+#block(breakable: false)[
 #project(
-  name: link("https://github.com/sgl-project/sglang-omni")[SGLang-Omni 开源社区贡献（Issue #2941 P3.6 / P7.4、#3583 & PR #3782）],
+  name: link("https://github.com/vllm-project/vllm-omni/pull/10246")[vLLM-Omni：Hy-Nomas 流式视频生成推理优化（PR #10246，已合入 main）],
+  role: text[推理系统与编译优化],
+  dates: "Nov 2026",
+)
+- *Step-Level 缓存与区域编译*：将 40 层 Transformer 重复构造的注意力计划、相机参数与 GPU RoPE 缓存提升至 step/chunk 级复用，消除稳态层循环中的 GPU–CPU 阻塞同步；隔离动态 KV 历史与分段注意力边界，接入 `torch.compile` 区域编译，补齐缓存失效及异常回滚语义。合并前在单卡 H100 PCIe 上通过 *7 项 CUDA 测试*（含 FP16/BF16 数值对齐与零同步检查）及 *220 项单元/运行时测试*（7 项可选依赖测试跳过）；保留 eager 默认配置。*54 层真实形状、随机权重的 DiT 微基准*中，相比优化前 eager，缓存与区域编译使 SP1 / SP2 的稳态去噪 step 加权延迟分别从 `1932.77 / 1998.97 ms` 降至 `1531.49 / 1757.80 ms`（*降低 20.8% / 12.1%*；1 / 2 张 H100 PCIe，不含完整权重端到端生成）。
+]
+
+#project(
+  name: link("https://github.com/sgl-project/sglang-omni/pull/3782")[SGLang-Omni 开源贡献（PR #3782 已合并；Issue #2941 P3.6 / P7.4、#3583）],
   role: text[Algorithm–Infra Co-design],
   dates: "Nov 2026",
 )
-- *MiniCPM-o 4.5 双流异步投机解码重叠与请求级 Hidden FIFO（Issue #2941 P7.4 / PR #3782）*：针对 `Audio Encoder -> Thinker -> Talker -> Code2Wav` 多阶段流水线中 DSpark 投机草稿器在 `event_loop_spec_overlap` 双流异步重叠（$W_max = 2$）下的跨步覆写（WAW）竞态，将单槽缓存升级为请求级双深双端队列（`dict[str, deque[torch.Tensor]]`），过滤 Chunked Prefill 非末块冗余入队，并在 `OmniScheduler` 注入流同步钩子与 Decode 撤回清理（`on_request_retracted`），移除投机解码强制回退同步模式的限制；在单卡 H100 PCIe 上通过 P0.6 ABBA 全并发（`c1..c64`）评测与 33 次强制撤回压力验证（100% 产出有效 WAV 音频），消除 `MMSU Text Out` 在 `c16` 下的同步投机 `0.90x` 吞吐倒退（恢复至 *`1.00x`*，p95 延迟降低 *`9.6%`*），并在 `MMSU Speech Out`（`c2..c32` 达 *`1.25x–1.40x`*，p95 降低 *`16.7%–39.0%`*）与 `Seed-TTS EN Speech Out`（`c1..c32` 达 *`1.26x–1.46x`*，全并发无退化）上实现端到端无损加速。
+- *MiniCPM-o 4.5 双流异步投机解码重叠与请求级 Hidden FIFO（Issue #2941 P7.4 / PR #3782）*：针对 `Audio Encoder -> Thinker -> Talker -> Code2Wav` 多阶段流水线中 DSpark 投机草稿器在 `event_loop_spec_overlap` 双流异步重叠（$W_max = 2$）下的跨步覆写（WAW）竞态，将单槽缓存升级为请求级双深双端队列（`dict[str, deque[torch.Tensor]]`），过滤 Chunked Prefill 非末块冗余入队，并在 `OmniScheduler` 注入流同步钩子与 Decode 撤回清理（`on_request_retracted`），移除投机解码强制回退同步模式的限制；在单卡 H100 PCIe 上通过 P0.6 ABBA 全并发（`c1..c64`）评测与 33 次强制撤回压力验证（100% 产出有效 WAV 音频），消除 `MMSU Text Out` 在 `c16` 下的同步投机 `0.90x` 吞吐倒退（恢复至 *`1.00x`*，p95 延迟降低 *`9.6%`*），并在 `MMSU Speech Out`（`c2..c32` 达 *`1.25x–1.40x`*，p95 降低 *`16.7%–39.0%`*）与 `Seed-TTS EN Speech Out`（`c1..c32` 达 *`1.26x–1.46x`*，`c1..c64` 吞吐均无退化）上实现端到端加速；MMSU Speech 在 `c64` 吞吐为基线 `0.89x`，Seed-TTS 汇总 WER 为 `2.63% → 2.73%`。
 - *Qwen3-TTS 双层自回归语音模型投机解码算法设计与 H100 双维度无损证伪（Issue #2941 P3.6 & #3583，获 Maintainer 采纳定论）*：独立负责官方 Roadmap *P3.6*，在 H100 PCIe 上完成 `Qwen3-TTS-12Hz-1.7B` 端到端瓶颈拆解（双层 AR 占比 *>85%*：28 层 `Main Talker` `2.45 ms/frame` 占 48%，15 步 `CodePredictor` `2.60 ms/frame` 占 52%），训练内层分块草稿器（Route A）与外层 1.1M 参数 `Gated-ResMLP` 跨帧草稿器（Route B，CUDA Graph 耗时 `0.082 ms`，对语义主码 $c_(t+1,0)$ 达 *85.44%* Top-50 Shaped 无损接受率）；证明内层 Route A 受深层声学残差码高熵（$g >= 5, H_g > 5.2 "bits"$）制约致 15 层全过率仅 `~1.2%`、无损平均仅接受 *2.46 步*（*0.330x 负加速*），揭示外层 Route B 受跨帧双向因果锁制约致严格无损联合推进退化至 *`~1.01` 帧/轮* 且近似残差引发 *21.9%–38.5% TV 漂移*，从信息论与系统执行流双维度确立双层 RVQ 自回归结构无损投机的 *No-Go 架构定论*。
 
 #work(
